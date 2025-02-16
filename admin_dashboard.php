@@ -22,7 +22,7 @@ if (isset($_POST['reset'])) {
     }
 
     echo "<script>
-        alert('Reset dữ liệu thành công!');
+        alert('Đặt lại dữ liệu thành công!');
         window.location.href = 'admin_dashboard.php';
     </script>";
     exit();
@@ -42,28 +42,28 @@ if (isset($_POST['update_registration'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resetstudentpassword'])) {
-        $username = trim($_POST['username']);
+    $username = trim($_POST['username']);
 
-        if (empty($username)) {
-            echo "<script>alert('Vui lòng nhập tên người dùng!');</script>";
+    if (empty($username)) {
+        echo "<script>alert('Vui lòng nhập tên người dùng!');</script>";
+    } else {
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+        $stmt->execute([$username]);
+        $user = $stmt->fetch();
+
+        if (!$user) {
+            echo "<script>alert('Không tìm thấy người dùng có tên \"$username\"!');</script>";
         } else {
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
-            $stmt->execute([$username]);
-            $user = $stmt->fetch();
+            $newPassword = bin2hex(random_bytes(4)); 
+            $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
 
-            if (!$user) {
-                echo "<script>alert('Không tìm thấy thí sinh/người dùng có tên \"$username\"!');</script>";
-            } else {
-                $newPassword = bin2hex(random_bytes(4)); 
-                $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+            $updateStmt = $pdo->prepare("UPDATE users SET password = ? WHERE username = ?");
+            $updateStmt->execute([$hashedPassword, $username]);
 
-                $updateStmt = $pdo->prepare("UPDATE users SET password = ? WHERE username = ?");
-                $updateStmt->execute([$hashedPassword, $username]);
-
-                echo "<script>alert('Mật khẩu mới của \"$username\": $newPassword');</script>";
-            }
+            echo "<script>alert('Mật khẩu mới của \"$username\": $newPassword');</script>";
         }
-    } 
+    }
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contest_settings'])) {
     $title = $_POST['title'];
     $start_time = $_POST['start_time'];
@@ -148,20 +148,20 @@ $problems = $stmt->fetchAll();
             <button type="submit" name="update_registration" class="btn btn-primary">Lưu Thay Đổi</button>
         </form>
         
-        <h2 class="mt-5">Reset Dữ Liệu</h2>
+        <h2 class="mt-5">Đặt Lại Dữ Liệu</h2>
         <form method="POST" class="bg-danger p-3 rounded">
-            <label class="form-label">Chọn dữ liệu cần reset:</label>
+            <label class="form-label">Chọn dữ liệu cần đặt lại:</label>
             <select name="reset_option" class="form-control mb-3">
-                <option value="problems">Reset Problems</option>
-                <option value="submissions">Reset Submissions</option>
-                <option value="users">Reset Users (trừ Admin)</option>
+                <option value="problems">Đặt Lại Đề Bài</option>
+                <option value="submissions">Đặt Lại Bài Nộp</option>
+                <option value="users">Đặt Lại Người Dùng (trừ Quản Trị Viên)</option>
             </select>
-            <button type="submit" name="reset" class="btn btn-warning">Reset</button>
+            <button type="submit" name="reset" class="btn btn-warning">Thực Thi</button>
         </form>
 
         <h2 class="mt-5">Đặt Lại Mật Khẩu</h2>
         <form method="POST" class="bg-danger p-3 rounded">
-            <label class="form-label">Tên Người Dùng Của Thí Sinh/Người Dùng:</label>
+            <label class="form-label">Tên Người Dùng Của Người Dùng:</label>
             <input type="text" name="username" class="form-control mb-3" placeholder="Nhập Tên Người Dùng">
             <button type="submit" name="resetstudentpassword" class="btn btn-warning">Thực Thi</button>
         </form>

@@ -10,7 +10,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $problem_name = $_POST['problem_name'];
+    $problem_name = $_POST['name'];
     $time_limit = $_POST['time_limit'];
     $memory_limit = $_POST['memory_limit'];
     $total_score = $_POST['total_score'];

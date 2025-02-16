@@ -61,7 +61,7 @@ $problems = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h1>Danh Sách Đề Bài</h1>
         <hr>
         <a href="create_problem.php" class="btn btn-success float-end">Tạo Đề Bài</a>
-        <table class="table table-dark table-striped mt-3">
+        <table class="table table-dark table-striped table-hover mt-3">
             <thead>
                 <tr>
                     <th>Tên Đề Bài</th>
