@@ -32,7 +32,7 @@ Tải về và Nhập cài đặt vào SQL từ file [online-judge-setup-databas
    - Bật chạy máy chủ (Start Apache).
    - Đăng nhập tài khoản `admin` với mật khẩu: `admin1234`.
    - Tại **Bảng Điều Khiển**, sửa thông tin thư mục bài nộp theo thông tin cài trong phần mềm _Themis_:
-     ![image](https://github.com/user-attachments/assets/1ea470ec-aeea-494a-acbd-fdc596af08ad)
+     ![image](https://github.com/user-attachments/assets/d0eb67d8-0d00-48aa-9823-1b72a12f34fb)
    - Lưu thay đổi.
 
 ----
@@ -47,7 +47,7 @@ Thế là xong bước cài đặt ban đầu!
 1. Quản Lý Kỳ Thi
 
    Quản Trị Viên có thể thay đổi thông tin kỳ thi bao gồm Tên kỳ thi, Thời gian diễn ra kỳ thi và Thư mục bài nộp kỳ thi:
-   ![image](https://github.com/user-attachments/assets/5a2511b9-5f11-44c9-b423-12ff6ccd9293)
+   ![image](https://github.com/user-attachments/assets/e80ad8cf-3982-4dd1-bee7-ada575dba90d)
 2. Danh Sách Đề Bài
 
    Phần này đang được mở rộng... tạm thời được đưa qua trang `Danh Sách Đề Bài` riêng. Tất cả đề bài nằm trong này sẽ được sử dụng trong kỳ thi.
@@ -68,7 +68,7 @@ Hiển thị danh sách đề bài nằm trong hệ thống trang web.
 1. Tạo Đề Bài
 
     Quản Trị Viên có thể tạo đề bài mới cho kỳ thi:
-    ![image](https://github.com/user-attachments/assets/e787d924-b6b6-4662-9467-ffaf30bee829)
+    ![image](https://github.com/user-attachments/assets/24b63683-db44-4020-ae98-2bf1f61c96b7)
     **Lưu Ý:** Các thông tin như Tên Đề Bài, Tổng Điểm, TL, ML cần phải khớp với máy chấm Themis.
 2. Sửa Đề Bài
 
@@ -79,7 +79,7 @@ Hiển thị danh sách đề bài nằm trong hệ thống trang web.
 
 ### Lịch Sử Nộp Bài
 
-![image](https://github.com/user-attachments/assets/a99ced22-496c-49ab-b727-61c2b7e05ab4)
+![image](https://github.com/user-attachments/assets/e59f9885-90fa-4954-8efc-bee4b2e6097f)
 
 #### Đối Với Người Dùng Thường
 
@@ -88,12 +88,12 @@ Có thể xem trạng thái, danh sách bài nộp của tất cả thí sinh tr
 #### Đối Với Quản Trị Viên
 
 Có thể xem trạng thái, danh sách bài nộp của tất cả thí sinh trong kỳ thi cũng như xem chi tiết bài nộp bao gồm Mã Nguồn, Chi Tiết Chấm của thí sinh. Đặc biệt có thể thực hiện xóa bài nộp trong trường hợp cần thiết.
-![image](https://github.com/user-attachments/assets/8ccace45-d82d-4f4a-8b07-c93bafbfbf37)
+![image](https://github.com/user-attachments/assets/aff7c9f1-0726-4c30-b030-108f97d8f7fc)
 
 ### Tham Gia Kỳ Thi
 
 Tất cả Người Dùng đều có thể tham gia kỳ thi, đọc đề bài cũng như nộp bài lên hệ thống.
-![image](https://github.com/user-attachments/assets/fe65762e-83f2-4949-86be-a050323458d9)
+![image](https://github.com/user-attachments/assets/82f01858-31b1-48f0-a3db-5ea46e84421d)
 
 ## Vấn Đề & Bổ Sung Sắp Tới
 
