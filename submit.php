@@ -94,19 +94,18 @@ if ($submit_type === "file") {
     }
 }
 
-$log_file = "";
-$max_wait_time = 30;
-$waited_time = 0;
+set_time_limit(0);
 
-while ($waited_time <= $max_wait_time) {
+$log_file = "";
+
+while (true) {
     foreach (glob($logs_path . "*") as $file) {
         if (stripos($file, "[{$username}][{$problem_name}]") !== false) {
             $log_file = $file;
             break 2;
         }
     }
-    sleep(1);
-    $waited_time++;
+    usleep(1000000);
 }
 
 if (!$log_file) {
