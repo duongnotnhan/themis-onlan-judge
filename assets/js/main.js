@@ -155,7 +155,7 @@ function fetchRanking() {
     });
 }
 
-setInterval(fetchRanking, 500);
+setInterval(fetchRanking, 5000);
 document.addEventListener("DOMContentLoaded", function() {
     updateCountdown();
     setInterval(updateCountdown, 1000);
