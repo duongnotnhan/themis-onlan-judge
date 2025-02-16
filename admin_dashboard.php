@@ -168,6 +168,7 @@ $problems = $stmt->fetchAll();
     </div>
 </body>
 <footer class="footer">
+    <hr>
     <div class="text-center mt-3">
         <p>Một cái footer bị lỗi...</p>
     </div>
