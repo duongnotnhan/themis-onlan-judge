@@ -76,6 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contest_settings'])) 
     header("Location: admin_dashboard.php");
     exit();
 }
+if (isset($_GET['logout'])) {
+	session_destroy();
+	header("Location: auth.php");
+	exit;
+}
 
 $stmt = $pdo->query("SELECT * FROM problems");
 $problems = $stmt->fetchAll();
