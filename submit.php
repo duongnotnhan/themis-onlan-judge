@@ -2,6 +2,8 @@
 session_start();
 require 'config.php';
 
+date_default_timezone_set("Asia/Ho_Chi_Minh");
+
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(["error" => "Bạn cần đăng nhập để nộp bài"]);
     exit;
@@ -25,9 +27,10 @@ if (!$contest) {
     exit;
 }
 
-$start_time = strtotime($contest['start_time'] . ' UTC');
-$end_time = strtotime($contest['end_time'] . ' UTC');
-$current_time = time() + 7 * 3600;
+$start_time = strtotime($contest['start_time'] . ' UTC') + 7 * 3600;
+$end_time = strtotime($contest['end_time'] . ' UTC') + 7 * 3600;
+$current_time = time();
+$current_time_sql = date('Y-m-d H:i:s', $current_time);
 
 if ($current_time < $start_time) {
     echo json_encode(["error" => "Kỳ thi chưa bắt đầu, vui lòng quay lại sau!"]);
@@ -158,8 +161,8 @@ if ($total_score >= $max_score) {
 }
 
 $stmt = $pdo->prepare("INSERT INTO submissions (user_id, problem_id, submitted_at, score, status, backup_code, backup_logs, language) 
-                       VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)");
-$stmt->execute([$user_id, $problem_id, $total_score, $status, $backup_code, $backup_logs, $language]);
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt->execute([$user_id, $problem_id, $current_time_sql, $total_score, $status, $backup_code, $backup_logs, $language]);
 
 if (file_exists($log_file)) {
     unlink($log_file);
