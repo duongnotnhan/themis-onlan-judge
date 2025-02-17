@@ -28,7 +28,7 @@ jobs:
       - name: Install MariaDB
         run: |
           choco install mariadb
-          Start-Service mariadb
+          refreshenv
 
       - name: ⚡ Setup and Configure MariaDB
         run: |
