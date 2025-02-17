@@ -28,7 +28,9 @@ jobs:
       - name: Install MariaDB
         run: |
           choco install mariadb
-          refreshenv
+          
+      - name: 🔄️ Refresh ENV
+        run: refreshenv
 
       - name: ⚡ Setup and Configure MariaDB
         run: |
