@@ -36,8 +36,8 @@ jobs:
 
       - name: ⚡ Setup and Configure MariaDB
         run: |
-          mysql -u root -proot -e "CREATE DATABASE IF NOT EXISTS online_judge;"
           mysql -u root -proot -e "CREATE USER IF NOT EXISTS 'root'@'localhost' IDENTIFIED BY 'root';"
+          mysql -u root -proot < online-judge-setup-database.sql
           mysql -u root -proot -e "GRANT ALL PRIVILEGES ON online_judge.* TO 'root'@'localhost';"
           mysql -u root -proot -e "FLUSH PRIVILEGES;"
 
