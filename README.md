@@ -2,7 +2,11 @@
 
 Hệ Thống Kỳ Thi Themis OnLAN
 
-Hệ thống hỗ trợ host: [UniServerZ](https://www.uniformserver.com/).
+## Thông Tin
+
+- Hệ thống hỗ trợ host: [UniServerZ](https://www.uniformserver.com/).
+- Hệ điều hành: Windows.
+- Cơ sở dữ liệu: MariaDB.
 
 ## Cài Đặt
 
