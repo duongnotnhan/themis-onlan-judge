@@ -36,10 +36,10 @@ jobs:
 
       - name: ⚡ Setup and Configure MariaDB
         run: |
-          mysql -e "CREATE DATABASE IF NOT EXISTS online_judge;"
-          mysql -e "CREATE USER IF NOT EXISTS 'root'@'localhost' IDENTIFIED BY 'root';"
-          mysql -e "GRANT ALL PRIVILEGES ON online_judge.* TO 'root'@'localhost';"
-          mysql -e "FLUSH PRIVILEGES;"
+          mysql -u root -proot -e "CREATE DATABASE IF NOT EXISTS online_judge;"
+          mysql -u root -proot -e "CREATE USER IF NOT EXISTS 'root'@'localhost' IDENTIFIED BY 'root';"
+          mysql -u root -proot -e "GRANT ALL PRIVILEGES ON online_judge.* TO 'root'@'localhost';"
+          mysql -u root -proot -e "FLUSH PRIVILEGES;"
 
       - name: Run tests
         run: composer test
