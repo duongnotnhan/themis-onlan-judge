@@ -30,7 +30,9 @@ jobs:
           choco install mariadb
           
       - name: 🔄️ Refresh ENV
-        run: refreshenv
+        run: |
+          Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+          refreshenv
 
       - name: ⚡ Setup and Configure MariaDB
         run: |
