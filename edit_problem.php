@@ -59,39 +59,77 @@ if (isset($_GET['logout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chỉnh Sửa Đề Bài</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-
+    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
     <link href="assets/css/prism.css" rel="stylesheet">
     <script src="assets/js/prism.js"></script>
-
     <script src="assets/js/markdown-it.min.js"></script>
-
     <link rel="stylesheet" href="assets/css/katex.min.css">
     <script src="assets/js/katex.min.js"></script>
     <script src="assets/js/auto-render.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="bg-dark text-light">
-<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
-	<div class="container">
-		<a class="navbar-brand" href="index.php">OnLAN Judge</a>
-		<div class="d-flex align-items-center">
-			<?php if (isset($_SESSION['user_id'])): ?>
-				<span class="navbar-text me-3">Xin chào, <strong><?= htmlspecialchars($_SESSION['username']) ?></strong></span>
-				<?php if ($_SESSION['role'] === 'admin'): ?>
-                    <a href="submissions.php" class="btn btn-outline-light me-2">Lịch Sử Nộp Bài</a>
-					<a href="problems.php" class="btn btn-outline-light me-2">Danh Sách Đề Bài</a>
-					<a href="admin_dashboard.php" class="btn btn-outline-light me-2">Bảng Điều Khiển</a>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+		<div class="container">
+			<a class="navbar-brand" href="index.php">OnLAN Judge</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+				<a href="ranking.php" class="btn btn-outline-light">
+					<i class="bi bi-bar-chart"></i> Bảng Xếp Hạng
+				</a>
+				<?php if (isset($_SESSION['user_id'])): ?>
+					<a href="submissions.php" class="btn btn-outline-light">
+						<i class="bi bi-clock-history"></i> Lịch Sử Nộp Bài
+					</a>
+					<div class="dropdown">
+						<button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+							<i class="bi bi-person-circle"></i>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-end">
+							<li><span class="dropdown-item-text" style='color:white;'>Xin chào, <strong><?= htmlspecialchars($_SESSION['username']) ?></strong></span></li>
+							<li><hr class="dropdown-divider"></li>
+							<?php if ($_SESSION['role'] === 'admin'): ?>
+								<li>
+									<a href="problems.php" class="dropdown-item">
+										<i class="bi bi-journal-text"></i> Danh Sách Đề Bài
+									</a>
+								</li>
+								<li>
+									<a href="admin_dashboard.php" class="dropdown-item">
+										<i class="bi bi-speedometer2"></i> Bảng Điều Khiển
+									</a>
+								</li>
+							<?php endif; ?>
+							<li>
+								<a href="edit_profile.php" class="dropdown-item">
+									<i class="bi bi-pencil-square"></i> Chỉnh Sửa Thông Tin
+								</a>
+							</li>
+							<li>
+								<a href="change_password.php" class="dropdown-item">
+									<i class="bi bi-key"></i> Đổi Mật Khẩu
+								</a>
+							</li>
+							<li><hr class="dropdown-divider"></li>
+							<li>
+								<a href="?logout" class="dropdown-item text-danger">
+									<i class="bi bi-box-arrow-right"></i> Đăng Xuất
+								</a>
+							</li>
+						</ul>
+					</div>
+				<?php else: ?>
+					<a href="auth.php" class="btn btn-success">
+						<i class="bi bi-person-plus-fill"></i> Đăng Nhập/Đăng Ký
+					</a>
 				<?php endif; ?>
-				<a href="change_password.php" class="btn btn-warning me-2">Đổi Mật Khẩu</a>
-				<a href="?logout" class="btn btn-danger">Đăng Xuất</a>
-			<?php else: ?>
-				<a href="auth.php" class="btn btn-success">Đăng Nhập/Đăng Ký</a>
-			<?php endif; ?>
+			</div>
 		</div>
-	</div>
-</nav>
-
+	</nav>
 <div class="container mt-5">
     <h1>Chỉnh Sửa Đề Bài</h1>
     <?php if ($error): ?>
@@ -162,9 +200,9 @@ if (isset($_GET['logout'])) {
     Prism.highlightAll();
 </script>
 </body>
-<footer class="footer">
+<footer>
     <div class="text-center mt-3">
-        <p>Một cái footer bị lỗi...</p>
+        <p>DuongNhanAC × ayor</p>
     </div>
 </footer>
 </html>

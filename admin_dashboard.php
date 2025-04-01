@@ -14,10 +14,12 @@ if (isset($_POST['reset'])) {
     $reset_option = $_POST['reset_option'];
 
     if ($reset_option === 'problems') {
+        $pdo->query("DELETE FROM submissions WHERE problem_id IN (SELECT id FROM problems)");
         $pdo->query("DELETE FROM problems");
     } elseif ($reset_option === 'submissions') {
         $pdo->query("DELETE FROM submissions");
     } elseif ($reset_option === 'users') {
+        $pdo->query("DELETE FROM submissions WHERE user_id IN (SELECT id FROM users WHERE role != 'admin')");
         $pdo->query("DELETE FROM users WHERE role != 'admin'");
     }
 
@@ -30,9 +32,8 @@ if (isset($_POST['reset'])) {
 
 if (isset($_POST['update_registration'])) {
     $allow_registration = $_POST['allow_registration'];
-
-    $stmt = $pdo->prepare("UPDATE contest_settings SET title = ?, start_time = ?, end_time = ?, submission_path = ?, allow_registration = ?");
-    $stmt->execute([$contest['title'], $contest['start_time'], $contest['end_time'], $contest['submission_path'], $allow_registration]);
+    $stmt = $pdo->prepare("UPDATE contest_settings SET allow_registration = ?");
+    $stmt->execute([$allow_registration]);
 
     echo "<script>
         alert('Cập nhật cài đặt đăng ký thành công!');
@@ -54,9 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resetstudentpassword'
         if (!$user) {
             echo "<script>alert('Không tìm thấy người dùng có tên \"$username\"!');</script>";
         } else {
-            $newPassword = bin2hex(random_bytes(4)); 
+            $newPassword = bin2hex(random_bytes(4));
             $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-
             $updateStmt = $pdo->prepare("UPDATE users SET password = ? WHERE username = ?");
             $updateStmt->execute([$hashedPassword, $username]);
 
@@ -70,16 +70,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contest_settings'])) 
     $end_time = $_POST['end_time'];
     $submission_path = $_POST['submission_path'];
 
-    $stmt = $pdo->prepare("UPDATE contest_settings SET title = ?, start_time = ?, end_time = ?, submission_path = ?, allow_registration = ?");
-    $stmt->execute([$title, $start_time, $end_time, $submission_path, $contest['allow_registration']]);
+    $stmt = $pdo->prepare("UPDATE contest_settings SET title = ?, start_time = ?, end_time = ?, submission_path = ?");
+    $stmt->execute([$title, $start_time, $end_time, $submission_path]);
 
     header("Location: admin_dashboard.php");
     exit();
 }
 if (isset($_GET['logout'])) {
-	session_destroy();
-	header("Location: auth.php");
-	exit;
+    session_destroy();
+    header("Location: auth.php");
+    exit;
 }
 
 $stmt = $pdo->query("SELECT * FROM problems");
@@ -94,28 +94,71 @@ $problems = $stmt->fetchAll();
     <title>Admin Dashboard</title>
     <link href="assets/css/prism.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="bg-dark text-light">
-<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
-	<div class="container">
-		<a class="navbar-brand" href="index.php">OnLAN Judge</a>
-		<div class="d-flex align-items-center">
-			<?php if (isset($_SESSION['user_id'])): ?>
-				<span class="navbar-text me-3">Xin chào, <strong><?= htmlspecialchars($_SESSION['username']) ?></strong></span>
-				<?php if ($_SESSION['role'] === 'admin'): ?>
-                    <a href="submissions.php" class="btn btn-outline-light me-2">Lịch Sử Nộp Bài</a>
-					<a href="problems.php" class="btn btn-outline-light me-2">Danh Sách Đề Bài</a>
-					<a href="admin_dashboard.php" class="btn btn-outline-light me-2 active">Bảng Điều Khiển</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+		<div class="container">
+			<a class="navbar-brand" href="index.php">OnLAN Judge</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+				<a href="ranking.php" class="btn btn-outline-light">
+					<i class="bi bi-bar-chart"></i> Bảng Xếp Hạng
+				</a>
+				<?php if (isset($_SESSION['user_id'])): ?>
+					<a href="submissions.php" class="btn btn-outline-light">
+						<i class="bi bi-clock-history"></i> Lịch Sử Nộp Bài
+					</a>
+					<div class="dropdown">
+						<button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+							<i class="bi bi-person-circle"></i>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-end">
+							<li><span class="dropdown-item-text" style='color:white;'>Xin chào, <strong><?= htmlspecialchars($_SESSION['username']) ?></strong></span></li>
+							<li><hr class="dropdown-divider"></li>
+							<?php if ($_SESSION['role'] === 'admin'): ?>
+								<li>
+									<a href="problems.php" class="dropdown-item">
+										<i class="bi bi-journal-text"></i> Danh Sách Đề Bài
+									</a>
+								</li>
+								<li>
+									<a href="admin_dashboard.php" class="dropdown-item">
+										<i class="bi bi-speedometer2"></i> Bảng Điều Khiển
+									</a>
+								</li>
+							<?php endif; ?>
+							<li>
+								<a href="edit_profile.php" class="dropdown-item">
+									<i class="bi bi-pencil-square"></i> Chỉnh Sửa Thông Tin
+								</a>
+							</li>
+							<li>
+								<a href="change_password.php" class="dropdown-item">
+									<i class="bi bi-key"></i> Đổi Mật Khẩu
+								</a>
+							</li>
+							<li><hr class="dropdown-divider"></li>
+							<li>
+								<a href="?logout" class="dropdown-item text-danger">
+									<i class="bi bi-box-arrow-right"></i> Đăng Xuất
+								</a>
+							</li>
+						</ul>
+					</div>
+				<?php else: ?>
+					<a href="auth.php" class="btn btn-success">
+						<i class="bi bi-person-plus-fill"></i> Đăng Nhập/Đăng Ký
+					</a>
 				<?php endif; ?>
-				<a href="change_password.php" class="btn btn-warning me-2">Đổi Mật Khẩu</a>
-				<a href="?logout" class="btn btn-danger">Đăng Xuất</a>
-			<?php else: ?>
-				<a href="auth.php" class="btn btn-success">Đăng Nhập/Đăng Ký</a>
-			<?php endif; ?>
+			</div>
 		</div>
-	</div>
-</nav>
-    <div class="container mt-5">
+	</nav>
+    <div class="container mt-5" style="margin-bottom:15px;">
         <h1>Bảng Điều Khiển</h1>
         <hr>
         <h2>Quản Lý Kỳ Thi</h2>
@@ -167,10 +210,9 @@ $problems = $stmt->fetchAll();
         </form>
     </div>
 </body>
-<footer class="footer">
-    <hr>
+<footer>
     <div class="text-center mt-3">
-        <p>Một cái footer bị lỗi...</p>
+        <p>DuongNhanAC × ayor</p>
     </div>
 </footer>
 </html>

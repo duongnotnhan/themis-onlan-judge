@@ -16,21 +16,20 @@ Sau khi tải về, giải nén vào thư mục `www` trong thư mục cài đ�
 
 ### Cài Đặt Cơ Sở Dữ Liệu
 
-Tải về và Nhập cài đặt vào SQL từ file [online-judge-setup-database.sql](https://github.com/duongnotnhan/themis-onlan-judge/blob/main/online-judge-setup-database.sql)
+Tải về và Nhập cài đặt vào SQL từ file [online-judge-setup-database.sql](https://github.com/duongnotnhan/themis-onlan-judge/blob/main/online-judge-setup-database.sql) có sẵn trong thư mục.
 
 ### Cấu Hình
 
 1. Cài đặt kết nối Cơ Sở Dữ Liệu
 
-   Mở file `config.php` và điền các thông tin tương ứng:
+   Mở file `.env` và điền các thông tin tương ứng:
 
-    ```php
-    $host = 'localhost'; //địa chỉ host SQL
-    $dbname = 'online_judge'; //mặc định
-    $username = 'root'; //username của SQL
-    $password = 'root'; //mật khẩu SQL
-    ...
-    ```
+   ```env
+   DB_HOST=127.0.0.1
+   DB_NAME=online_judge
+   DB_USER=root
+   DB_PASS=root
+   ```
 
 2. Cấu hình thư mục
    - Bật chạy máy chủ (Start Apache).
@@ -39,6 +38,10 @@ Tải về và Nhập cài đặt vào SQL từ file [online-judge-setup-databas
      ![image](https://github.com/user-attachments/assets/d0eb67d8-0d00-48aa-9823-1b72a12f34fb)
    - Lưu thay đổi.
 
+3. Cài đặt hệ thống xử lý hàng đợi
+   - Cài đặt PHP có sẵn trong UniserverZ vào PATH hoặc sử dụng trực tiếp bằng cách sao chép đường dẫn.
+   - Khởi chạy tệp `judge_worker.php`:
+   ![image](https://i.postimg.cc/Hsb7817F/Screenshot-2025-04-01-201644.png)
 ----
 Thế là xong bước cài đặt ban đầu!
 
@@ -87,7 +90,7 @@ Hiển thị danh sách đề bài nằm trong hệ thống trang web.
 
 #### Đối Với Người Dùng Thường
 
-Có thể xem trạng thái, danh sách bài nộp của tất cả thí sinh trong kỳ thi. Tuy nhiên, không thể thực hiện chức năng Quản Trị.
+Có thể xem trạng thái, danh sách bài nộp của tất cả thí sinh trong kỳ thi, xem bảng xếp hạng vắn tắt (trang chủ) hoặc đầy đủ (trang được tách biệt). Tuy nhiên, không thể thực hiện chức năng Quản Trị.
 
 #### Đối Với Quản Trị Viên
 
@@ -103,8 +106,7 @@ Tất cả Người Dùng đều có thể tham gia kỳ thi, đọc đề bài 
 
 ### Vấn Đề Đã Biết
 
-1. Người dùng cũng như Quản Trị Viên chưa thể tự thay đổi thông tin Họ và Tên, Lớp của mình
-   - Giải quyết tạm thời: người chạy máy chủ web phải vào Cơ Sở Dữ Liệu để thay đổi thông tin này.
+_Hiện đang trong quá trình thử nghiệm..._
 
 ### Vấn Đề Chưa Biết
 
@@ -112,7 +114,4 @@ _Hiện đang trong quá trình thử nghiệm..._
 
 ### Bổ Sung Sắp Tới
 
-1. Hệ thống E-mail
-    - Các tính năng mới: hệ thống xác thực e-mail, tính năng `Tự Đặt Lại Mật Khẩu`.
-2. Thông tin cá nhân
-    - Các tính năng mới: tính năng `Tự Thay Đổi Thông Tin Cá Nhân`, thêm thông tin `Tên Trường`.
+1. Chức năng tự cấp lại mật khẩu.

@@ -16,6 +16,7 @@ if (isset($_POST['register'])) {
     } else {
         $full_name = trim($_POST['full_name']);
         $class = trim($_POST['class']);
+        $school = trim($_POST['school']);
         $username = trim($_POST['username']);
         $prepassword = $_POST['password'];
         $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
@@ -28,8 +29,8 @@ if (isset($_POST['register'])) {
             if ($stmt->fetch()) {
                 echo "<script>alert('Tên người dùng đã tồn tại, hãy chọn tên khác!');</script>";
             } else {
-                $stmt = $pdo->prepare("INSERT INTO users (full_name, class, username, password, role) VALUES (?, ?, ?, ?, ?)");
-                if ($stmt->execute([$full_name, $class, $username, $password, $role])) {
+                $stmt = $pdo->prepare("INSERT INTO users (full_name, class, school, username, password, role) VALUES (?, ?, ?, ?, ?, ?)");
+                if ($stmt->execute([$full_name, $class, $school, $username, $password, $role])) {
                     echo "<script>alert('Đăng ký thành công. Vui lòng đăng nhập.');</script>";
                 } else {
                     echo "<script>alert('Lỗi đăng ký!');</script>";
@@ -76,7 +77,9 @@ if (isset($_GET['logout'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng Nhập & Đăng Ký</title>
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/styles.css">
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
     <style>
         .p-4 a {
             color: #FFD700 !important;
@@ -110,6 +113,7 @@ if (isset($_GET['logout'])) {
                     <form action="" method="POST">
                         <input type="text" name="full_name" placeholder="Họ và Tên" required class="form-control mb-3">
                         <input type="text" name="class" placeholder="Lớp" required class="form-control mb-3">
+                        <input type="text" name="school" placeholder="Trường" required class="form-control mb-3">
                         <input type="text" name="username" placeholder="Tên đăng nhập" required class="form-control mb-3">
                         <input type="password" name="password" placeholder="Mật khẩu" required class="form-control mb-3">
                         <button type="submit" name="register" class="btn btn-success w-100">Đăng Ký</button>
@@ -132,9 +136,9 @@ if (isset($_GET['logout'])) {
         }
     </script>
 </body>
-<footer class="footer">
+<footer>
     <div class="text-center mt-3">
-        <p>Một cái footer bị lỗi...</p>
+        <p>DuongNhanAC × ayor</p>
     </div>
 </footer>
 </html>

@@ -44,6 +44,7 @@ foreach ($submissions as $submission) {
             </td>
             <td>
                 <button class='btn btn-primary btn-sm viewSubmission' data-id='{$submission['id']}'>Xem Chi Tiết</button>
+                <button class='btn btn-warning btn-sm rejudgeSubmission' data-id='{$submission['id']}'>Chấm Lại</button>
                 <button class='btn btn-danger btn-sm deleteSubmission' data-id='{$submission['id']}'>Xóa</button>
             </td>
         </tr>

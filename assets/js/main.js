@@ -105,12 +105,12 @@ function updateCountdown() {
 
     if (now < startTime) {
         let diff = startTime - now;
-        countdownElement.innerHTML = "⏳ Bắt đầu trong: " + formatTime(diff);
+        countdownElement.innerHTML = "<i class=\"bi bi-alarm\"></i> Bắt đầu trong: " + formatTime(diff);
     } else if (now >= startTime && now < endTime) {
         let diff = endTime - now;
-        countdownElement.innerHTML = "⌛ Kết thúc trong: " + formatTime(diff);
+        countdownElement.innerHTML = "<i class=\"bi bi-hourglass-split\"></i> Kết thúc trong: " + formatTime(diff);
     } else {
-        countdownElement.innerHTML = "🔴 Kỳ thi đã kết thúc!";
+        countdownElement.innerHTML = "<i class=\"bi bi-hourglass-bottom\"></i> Kỳ thi đã kết thúc!";
     }
 }
 
@@ -129,6 +129,13 @@ function formatTime(ms) {
     return result;
 }
 
+function formatTime_(seconds) {
+    let h = Math.floor(seconds / 3600);
+    let m = Math.floor((seconds % 3600) / 60);
+    let s = seconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
+
 function fetchRanking() {
     $.ajax({
         url: "fetch_ranking.php",
@@ -141,10 +148,10 @@ function fetchRanking() {
                     <tr>
                         <td class="text-center align-middle">${index + 1}</td>
                         <td>
-                            <strong>${row.username}</strong><br>
-                            <span class="text-info">${row.full_name}</span> - <b>${row.class}</b>
+                            <strong class="text-info">${row.full_name}</strong><br>
+                            <span>${row.username}</span><br /><b>${row.class}</b> - <b>${row.school}</b>
                         </td>
-                        <td class="text-center align-middle"><strong>${row.total_score}</strong></td>
+                        <td class="text-center align-middle"><strong class="score">${row.total_score}</strong><br /><small class="time">${formatTime_(row.total_time)}</small></td>
                     </tr>`;
             });
             $("#rankingTable tbody").html(rankingHTML);
@@ -155,7 +162,8 @@ function fetchRanking() {
     });
 }
 
-setInterval(fetchRanking, 5000);
+
+setInterval(fetchRanking, 2500);
 document.addEventListener("DOMContentLoaded", function() {
     updateCountdown();
     setInterval(updateCountdown, 1000);

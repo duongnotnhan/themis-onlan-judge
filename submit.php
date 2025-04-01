@@ -27,8 +27,8 @@ if (!$contest) {
     exit;
 }
 
-$start_time = strtotime($contest['start_time'] . ' UTC') + 7 * 3600;
-$end_time = strtotime($contest['end_time'] . ' UTC') + 7 * 3600;
+$start_time = strtotime($contest['start_time']);
+$end_time = strtotime($contest['end_time']);
 $current_time = time();
 $current_time_sql = date('Y-m-d H:i:s', $current_time);
 
@@ -43,10 +43,8 @@ if ($current_time > $end_time) {
 }
 
 $submission_path = rtrim($contest['submission_path'], '/') . '/';
-$logs_path = $submission_path . "Logs/";
-
-if (!is_dir($submission_path) || !is_dir($logs_path)) {
-    echo json_encode(["error" => "Thư mục nộp bài hoặc Logs không tồn tại"]);
+if (!is_dir($submission_path)) {
+    echo json_encode(["error" => "Thư mục nộp bài không tồn tại"]);
     exit;
 }
 
@@ -60,10 +58,8 @@ if (!$problem) {
 }
 
 $problem_id = $problem['id'];
-$filename = "[{$username}][{$problem_name}]";
-
-$backup_code = "";
 $language = "";
+$backup_code = "";
 
 if ($submit_type === "file") {
     if (!isset($_FILES["code_file"])) {
@@ -72,101 +68,26 @@ if ($submit_type === "file") {
     }
 
     $file_ext = pathinfo($_FILES["code_file"]["name"], PATHINFO_EXTENSION);
-    
     $supported_languages = ['c' => 'C', 'cpp' => 'CPP', 'py' => 'PY', 'pas' => 'PAS'];
-    if (!mb_strtolower($supported_languages[$file_ext])) {
+
+    if (!isset($supported_languages[$file_ext])) {
         echo json_encode(["error" => "File không hợp lệ hoặc ngôn ngữ không được hỗ trợ."]);
         exit;
     }
 
     $language = $supported_languages[$file_ext];
-    $target_file = $submission_path . $filename . "." . $file_ext;
-
     $backup_code = file_get_contents($_FILES["code_file"]["tmp_name"]);
-
-    if (!move_uploaded_file($_FILES["code_file"]["tmp_name"], $target_file)) {
-        echo json_encode(["error" => "Lỗi khi tải file lên"]);
-        exit;
-    }
-
-    foreach (glob($logs_path . "*") as $log_file_) {
-        if (stripos($log_file_, "[{$username}][{$problem_name}]") !== false) {
-            unlink($log_file_);
-            break;
-        }
-    }
 }
 
-set_time_limit(0);
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM submissions WHERE user_id = ? AND problem_id = ? AND status = 'PENDING'");
+$stmt->execute([$user_id, $problem_id]);
+$pending_count = $stmt->fetchColumn();
 
-$log_file = "";
+$status = ($pending_count == 0) ? "PENDING" : "NOT SUBMITTED";
 
-while (true) {
-    foreach (glob($logs_path . "*") as $file) {
-        if (stripos($file, "[{$username}][{$problem_name}]") !== false) {
-            $log_file = $file;
-            break 2;
-        }
-    }
-    usleep(1000000);
-}
+$stmt = $pdo->prepare("INSERT INTO submissions (user_id, problem_id, submitted_at, status, backup_code, language) 
+                       VALUES (?, ?, ?, ?, ?, ?)");
+$stmt->execute([$user_id, $problem_id, $current_time_sql, $status, $backup_code, $language]);
 
-if (!$log_file) {
-    echo json_encode(["error" => "\"Ultra Time Limit Exceeded\" hoặc Máy Chấm lỗi!"]);
-    exit;
-}
-
-$backup_logs = file_get_contents($log_file);
-$lines = explode("\n", $backup_logs);
-$total_score = 0;
-$status = "WA";
-$found_testcase = false;
-
-$pattern = '/^' . preg_quote(mb_strtolower($username, 'UTF-8'), '/') . '‣' . preg_quote(mb_strtolower($problem_name, 'UTF-8'), '/') . '‣.*: ([0-9.]+)/i';
-
-$stmt = $pdo->prepare("SELECT total_score FROM problems WHERE id = ?");
-$stmt->execute([$problem_id]);
-$problem_data = $stmt->fetch(PDO::FETCH_ASSOC);
-$max_score = $problem_data['total_score'];
-
-foreach ($lines as $line) {
-    $line_lower = mb_strtolower($line, 'UTF-8');
-
-    if (preg_match($pattern, $line_lower, $matches)) {
-        $total_score += floatval($matches[1]);
-        $found_testcase = true;
-    }
-
-    if (strpos($line_lower, "quá bộ nhớ") !== false) {
-        $status = "MLE"; 
-    } elseif (strpos($line_lower, "chạy sinh lỗi") !== false) {
-        $status = "ER/IR";
-    } elseif (strpos($line_lower, "quá thời gian") !== false) {
-        $status = "TLE"; 
-    } elseif (strpos($line_lower, "không thấy file") !== false) {
-        $status = "WA";
-    } elseif (strpos($line_lower, "khác đáp án") !== false) {
-        $status = "WA";
-    }
-}
-
-if (!$found_testcase) {
-    $total_score = 0;
-    $status = "CE";
-}
-
-if ($total_score >= $max_score) {
-    $total_score = $max_score;
-    $status = "AC";
-}
-
-$stmt = $pdo->prepare("INSERT INTO submissions (user_id, problem_id, submitted_at, score, status, backup_code, backup_logs, language) 
-                       VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->execute([$user_id, $problem_id, $current_time_sql, $total_score, $status, $backup_code, $backup_logs, $language]);
-
-if (file_exists($log_file)) {
-    unlink($log_file);
-}
-
-echo json_encode(["success" => "Chấm thành công!", "score" => $total_score, "status" => $status, "language" => $language]);
+echo json_encode(["success" => "Nộp bài thành công!", "status" => $status]);
 exit;

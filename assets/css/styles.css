@@ -55,21 +55,38 @@
     border-radius: 6px;
     overflow-x: auto;
 }
-html, body {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
+.time { font-size: 12px; color: #6acbf7; }
+.score { font-size: 22px; }
+body {
+    position: relative;
+    min-height: 100%;
+    margin: 0 auto;
+    font-size: 15px;
+    line-height: 1.231;
+    height: 120%
 }
 .content {
     flex: 1;
+    padding-bottom: 4em;
 }
-.footer {
-    position: relative;
-    bottom: 0;
+footer {
+    position: absolute;
+    display: block;
+    bottom: auto;
     width: 100%;
-    background: #f8f9fa3d;
-    padding: 10px 0;
+    background-color: rgb(56, 135, 224);
+    color: white;
     text-align: center;
-    border-top: 1px solid #ddd;
+}
+.dropdown-menu {
+    background-color: #343a40;
+    color: white;
+    border: 1px solid #555;
+    min-width: 200px;
+}
+.dropdown-menu a {
+    color: white;
+}
+.dropdown-menu a:hover {
+    background-color: #495057;
 }

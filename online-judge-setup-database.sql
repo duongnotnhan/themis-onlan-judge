@@ -1,185 +1,104 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1:3306
--- Generation Time: Feb 15, 2025 at 08:42 AM
--- Server version: 11.6.2-MariaDB
--- PHP Version: 8.3.0
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+07:00";
-
---
--- Database: `online_judge`
---
-CREATE DATABASE IF NOT EXISTS `online_judge` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci;
-USE `online_judge`;
-
+-- --------------------------------------------------------
+-- Máy chủ:                      127.0.0.1
+-- Server version:               11.6.2-MariaDB - mariadb.org binary distribution
+-- Server OS:                    Win64
+-- HeidiSQL Phiên bản:           12.8.0.6908
 -- --------------------------------------------------------
 
---
--- Table structure for table `contest_settings`
---
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-CREATE TABLE `contest_settings` (
-  `id` int(11) NOT NULL,
+
+-- Dumping database structure for online_judge
+CREATE DATABASE IF NOT EXISTS `online_judge` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;
+USE `online_judge`;
+
+-- Dumping structure for table online_judge.contest_settings
+CREATE TABLE IF NOT EXISTS `contest_settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `start_time` datetime NOT NULL,
   `end_time` datetime NOT NULL,
   `submission_path` varchar(255) NOT NULL,
-  `allow_registration` tinyint(1) DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  `allow_registration` tinyint(1) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
---
--- Dumping data for table `contest_settings`
---
-
+-- Dumping data for table online_judge.contest_settings: ~0 rows (approximately)
+DELETE FROM `contest_settings`;
 INSERT INTO `contest_settings` (`id`, `title`, `start_time`, `end_time`, `submission_path`, `allow_registration`) VALUES
-(1, 'Test01', '2025-02-14 13:12:00', '2025-02-19 15:12:00', 'D:\\Themis\\data\\uploadDir', 1);
+	(1, 'Test01', '2025-03-31 19:30:00', '2025-04-30 15:12:00', 'D:\\Themis\\data\\uploadDir', 1);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `problems`
---
-
-CREATE TABLE `problems` (
-  `id` int(11) NOT NULL,
+-- Dumping structure for table online_judge.problems
+CREATE TABLE IF NOT EXISTS `problems` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `total_score` int(11) NOT NULL,
   `time_limit` float NOT NULL,
   `memory_limit` int(11) NOT NULL,
-  `description` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  `description` longtext NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
---
--- Dumping data for table `problems`
---
-
+-- Dumping data for table online_judge.problems: ~1 rows (approximately)
+DELETE FROM `problems`;
 INSERT INTO `problems` (`id`, `name`, `total_score`, `time_limit`, `memory_limit`, `description`) VALUES
-(1, 'abai', 1, 1, 1024, '# Tên API\r\n\r\n## Điểm cuối: `/example-endpoint`\r\n\r\n- **Phương thức:** `GET`\r\n- **Mô tả:** Lấy dữ liệu ví dụ.\r\n\r\n### Tham số yêu cầu\r\n\r\n- `param1` (bắt buộc): Mô tả của param1.\r\n- `param2` (tùy chọn): Mô tả của param2.\r\n\r\n### Phản hồi\r\n\r\n```json\r\n{\r\n  \"data\": \"Sample data\"\r\n}\r\n```\r\n\r\nhehe $\\sqrt{3x-1}+(1+x)^2$'),
-(2, 'abai13', 10, 1, 1, '# Giới thiệu WOW\r\n\r\nĐã có ai dùng `GitHub` bao lâu nay vẫn không biết các tệp với đuôi mở rộng .md là gì không?\r\n\r\n`Markdown` là ngôn ngữ đánh dấu có cú pháp khá đơn giản và dễ hiểu, tạo thuận tiện cho việc chuyển đổi từ văn bản thuần sang `HTML`.\r\n\r\nThay vì dựa vào `HTML`, `Markdown` cho phép bạn định dạng văn bản mà trực quan hơn nhiều so với `HTML`.\r\n\r\nCó thể bạn chưa biết: `Markdown` có thể được sử dụng tại [Github](https://github.com) và [Discord](https://discord.com).\r\n\r\n> If you can, feel free to translate this repo into other languages, thanks!\r\n\r\n> Tài liệu được viết tay bởi [Lục Thiên Phong](https://github.com/lucthienphong1120), để giúp bạn có thêm hiểu biết và làm chủ về Markdown.\r\n\r\n# Mục lục\r\n\r\n[I. Sơ lược](#i-sơ-lược)\r\n- [1. MarkDown (Markup languages)](#1-markdown-markup-languages)\r\n- [2. Một số trình soạn thảo Markdown](#2-một-số-trình-soạn-thảo-markdown)\r\n\r\n[II. Cách sử dụng](#ii-cách-sử-dụng)\r\n- [1. Văn bản thuần](#1-văn-bản-thuần)\r\n  - [1. Tiêu đề - Heading](#1-tiêu-đề---heading)\r\n  - [2. Đoạn văn - Paragraph](#2-đoạn-văn---paragraph)\r\n  - [3. Chữ in nghiêng - Italic](#3-chữ-in-nghiêng---italic)\r\n  - [4. Chữ in đậm - Bold](#4-chữ-in-đậm---bold)\r\n  - [5. In đậm và in nghiêng](#5-in-đậm-và-in-nghiêng)\r\n  - [6. Chữ gạch giữa - Strikethrough](#6-chữ-gạch-giữa---strikethrough)\r\n  - [7. Code trong dòng - Inline Code](#7-code-trong-dòng---inline-code)\r\n- [2. Các khối](#2-các-khối)\r\n  - [1. Trích dẫn - Blockquote](#1-trích-dẫn---blockquote)\r\n  - [2. Danh sách có thứ tự - Ordered List](#2-danh-sách-có-thứ-tự---ordered-list)\r\n  - [3. Danh sách không có thứ tự - Unordered List](#3-danh-sách-không-có-thứ-tự---unordered-list)\r\n  - [4. Khối lệnh - Block Code](#4-khối-lệnh---block-code)\r\n  - [5. Bảng - Table](#5-bảng---table)\r\n- [3. Đặc biệt](#3-đặc-biệt)\r\n  - [1. Đường kẻ ngang - Horizonal rules](#1-đường-kẻ-ngang---horizonal-rules)\r\n  - [2. Liên kết - Link](#2-liên-kết---link)\r\n  - [3. Hình ảnh - Image](#3-hình-ảnh---image)\r\n  - [4. Biểu tượng cảm xúc - Icon](#4-biểu-tượng-cảm-xúc---icon)\r\n  - [5. Checkbox](#5-checkbox)\r\n  - [6. Escape markdown](#6-escape-markdown)\r\n\r\n[III. Kết thúc](#iii-kết-thúc)\r\n\r\n# I. Sơ lược\r\n\r\n## 1. MarkDown (Markup languages)\r\n\r\nSự thật là cái tên **\"Markdown\"** chính là một phép chơi chữ của từ **\"Markup\"**.\r\n\r\nMardown được sử dụng để xuất văn bản thô trên trình duyệt nhưng các ngôn ngữ đánh dấu khác lại có thể giao tiếp trực tiếp với máy tính. Đơn cử như `XML` là một ngôn ngữ đánh dấu văn bản mà cả con người lẫn máy móc có thể đọc được.\r\n\r\nMột ngôn ngữ đánh dấu văn bản khác mà mọi người chắc hẳn ai học CNTT cũng biết vì độ nổi tiếng của nó, chính là `HTML`, `Markdown` không mang trong mình sứ mệnh **\"Kẻ huỷ diệt HTML\"** hay gì, mà mục đích của nó chính là làm đơn giản hoá việc đánh dấu văn bản và tăng cường tốc độ viết lách một cách đáng kể.\r\n\r\n## 2. Một số trình soạn thảo Markdown\r\n\r\n- Mac, Windows, và Linux\r\n  - [Typora](https://typora.io/)\r\n  - [MacDown](https://macdown.uranusjr.com/)\r\n- Online\r\n  - [StackEdit](https://stackedit.io/) \r\n  - [Dillinger](https://dillinger.io/)\r\n  - [Hashify](https://hashify.me/)\r\n- Sau bài viết này, bạn có thể viết md mà không cần chuyển đổi\r\n  - Notepad\r\n  - Visual Studio Code\r\n  - Visual Code\r\n  - Notepad++\r\n  - Vi,nano,...\r\n  - Github,Discord,...\r\n\r\n# II. Cách sử dụng\r\n\r\n## 1. Văn bản thuần\r\n\r\n### 1 Tiêu đề - Heading\r\n\r\nBạn có thể viết loại tiêu đề `<h1>, <h2>,... <h6>` bằng cách thêm các dấu # tương ứng vào đầu dòng.\r\n\r\nMột dấu # tương đương với `<h1>`, hai dấu # tương đương với `<h2>` ...\r\n\r\nCú pháp:\r\n```\r\n# Tiêu đề loại 1\r\n## Tiêu đề loại 2\r\n### Tiêu đề loại 3\r\n#### Tiêu đề loại 4\r\n##### Tiêu đề loại 5\r\n###### Tiêu đề loại 6\r\n```\r\nKết quả:\r\n\r\n# Tiêu đề loại 1\r\n## Tiêu đề loại 2\r\n### Tiêu đề loại 3\r\n#### Tiêu đề loại 4\r\n##### Tiêu đề loại 5\r\n###### Tiêu đề loại 6\r\n\r\n### 2. Đoạn văn - Paragraph\r\n\r\nĐể xuống dòng giữa các văn bản `<p>`, sử dụng một dòng trống để tách các dòng văn bản.\r\n\r\nCú pháp:\r\n```\r\nĐây là dòng 1\r\n\r\nĐây là dòng 2\r\n```\r\nKết quả:\r\n\r\nĐây là dòng 1\r\n\r\nĐây là dòng 2\r\n\r\n### 3. Chữ in nghiêng - Italic\r\n\r\nĐể in nghiêng văn bản `<i>`, thêm một dấu * hoặc dấu _ trước và sau từ cần in nghiêng.\r\n\r\nCú pháp:\r\n```\r\n*Từ cần in nghiêng 1*\r\n\r\n_Từ cần in nghiêng 2_\r\n```\r\nKết quả:\r\n\r\n*Từ cần in nghiêng 1*\r\n\r\n_Từ cần in nghiêng 2_\r\n\r\n### 4. Chữ in đậm - Bold\r\n\r\nĐể in đậm văn bản `<b>`, thêm hai dấu * hoặc dấu _ trước và sau từ cần in đậm.\r\n\r\nCú pháp:\r\n```\r\n**Từ cần in đậm 1**\r\n\r\n__Từ cần in đậm 2__\r\n```\r\nKết quả:\r\n\r\n**Từ cần in đậm 1**\r\n\r\n__Từ cần in đậm 2__\r\n\r\n### 5. In đậm và in nghiêng\r\n\r\nĐơn giản, bạn chỉ cần ba dấu * hoặc dấu _ trước và sau từ đó.\r\n\r\nCú pháp:\r\n```\r\n***Từ in đậm và in nghiêng 1***\r\n\r\n___Từ in đậm và in nghiêng 2___\r\n```\r\nKết quả:\r\n\r\n***Từ in đậm và in nghiêng 1***\r\n\r\n___Từ in đậm và in nghiêng 2___\r\n\r\n### 6. Chữ gạch giữa - Strikethrough\r\n\r\nĐể tạo chữ gạch giữa, thêm 2 dấu ~ trước và sau từ đó.\r\n\r\nCú pháp:\r\n```\r\n~~Khuyến mại~~\r\n```\r\nKết quả:\r\n\r\n~~Khuyến mại~~\r\n\r\n### 7. Code trong dòng - Inline Code\r\n\r\nĐể viết inline `<code>`, bạn dùng 2 dấu ` ở trước và sau từ đó.\r\n\r\nCú pháp:\r\n```\r\n`inline code`\r\n```\r\nKết quả:\r\n\r\n`inline code`\r\n\r\n## 2. Các khối\r\n\r\n### 1. Trích dẫn - Blockquote\r\n\r\nĐể tạo một `<blockquote>`, thêm dấu > vào trước mỗi dòng trích dẫn.\r\n\r\nCú pháp:\r\n```\r\n> Trích dẫn dòng 1\r\n> Trích dẫn dòng 2\r\n```\r\nKết quả:\r\n\r\n> Trích dẫn dòng 1\r\n> Trích dẫn dòng 2\r\n\r\n### 2. Danh sách có thứ tự - Ordered List\r\n\r\nĐể tạo danh sách `<ol><li>`, bạn chỉ cần thêm các số, dấu chấm trước nội dung (dùng tab để phân cấp)\r\n\r\nCú pháp:\r\n```\r\n1. Mục thứ nhất\r\n2. Mục thứ hai\r\n3. Mục thứ ba\r\n```\r\nKết quả:\r\n\r\n1. Mục thứ nhất\r\n2. Mục thứ hai\r\n3. Mục thứ ba\r\n\r\n### 3. Danh sách không có thứ tự - Unordered List\r\n\r\nĐể tạo danh sách `<ul><li>`, bạn chỉ cần thêm dấu * hoặc - hoặc + trước nội dung (dùng tab để phân cấp)\r\n\r\nCú pháp:\r\n```\r\n- Mục thứ nhất\r\n- Mục thứ hai\r\n- Mục thứ ba\r\n```\r\nKết quả:\r\n\r\n- Mục thứ nhất\r\n- Mục thứ hai\r\n- Mục thứ ba\r\n\r\n### 4. Khối lệnh - Block Code\r\n\r\nĐể viết 1 đoạn `<code>`, bạn dùng 3 dấu ` ở trước và sau đoạn đó (có thể thêm format ngôn ngữ đó).\r\n\r\nCú pháp:\r\n\r\n![image](https://user-images.githubusercontent.com/90561566/160242871-aad90ad1-bd8d-4e5c-9146-3349fb7c8c98.png)\r\n\r\nKết quả:\r\n\r\n```python\r\nprint(\"hello world\")\r\n```\r\n\r\n### 5. Bảng - Table\r\n\r\nĐể tạo bảng `<table><tbody><tr><th><th>`, bạn chỉ cần ngăn cách bởi dấu | và cách đầu bảng với thân bảng bằng :--- (số dấu - tuỳ ý)\r\n\r\nCú pháp:\r\n```\r\n| Cột 1 | Cột 2 | Cột 3 | Cột 4 |\r\n| :--- | :--- | :--- | :--- |\r\n| A | B | C | D |\r\n| E | F | G | H |\r\n| I | K | L | M |\r\n```\r\nKết quả\r\n\r\n| Cột 1 | Cột 2 | Cột 3 | Cột 4 |\r\n| :--- | :--- | :--- | :--- |\r\n| A | B | C | D |\r\n| E | F | G | H |\r\n| I | K | L | M |\r\n\r\n## 3. Đặc biệt\r\n\r\n### 1. Đường kẻ ngang - Horizonal rules\r\n\r\nĐể tạo đường kẻ ngang, sử dụng ba dấu * hoặc - hoặc _ trên một dòng.\r\n\r\nCú pháp:\r\n```\r\n---\r\n***\r\n___\r\n```\r\nKết quả:\r\n\r\n---\r\n***\r\n___\r\n\r\n### 2. Liên kết - Link\r\n\r\nĐể chèn trực tiếp, bạn có thể paste thẳng nó như bình thường.\r\n\r\nĐể dẫn liên kết `<a href=\"https://github.com\">Github</a>`, bạn dùng `[text](link)`.\r\n\r\nCú pháp:\r\n```\r\nTrực tiếp: https://github.com/lucthienphong1120\r\n\r\nGián tiếp: [Github](https://github.com/lucthienphong1120)\r\n```\r\nKết quả:\r\n\r\nTrực tiếp: https://github.com/lucthienphong1120\r\n\r\nGián tiếp: [Github](https://github.com/lucthienphong1120)\r\n\r\n### 3. Hình ảnh - Image\r\n\r\nĐể chèn trực tiếp, bạn có thể paste thẳng nó như bình thường.\r\n\r\nĐể dẫn ảnh `<img src=\"https://avatars.githubusercontent.com/u/583231 alt=\"Github\">`, bạn dùng `![text](link ảnh)`.\r\n\r\nHoặc `![](link ảnh)` nếu không cần chữ khi hover.\r\n\r\nCú pháp:\r\n```\r\n![](https://avatars.githubusercontent.com/u/583231)\r\n```\r\nKết quả:\r\n\r\n![](https://avatars.githubusercontent.com/u/583231)\r\n\r\nĐể chèn liên kết vào ảnh `<a href=\"link\"><img src=\"link ảnh\" alt=\"chữ\"></a>` thì chỉ cần kết hợp đúng cú pháp là được.\r\n\r\n```\r\n[ ![chữ](link ảnh) ] (link)\r\n```\r\n\r\n### 4. Biểu tượng cảm xúc - Icon\r\n\r\nPhần này tuỳ vào nền tảng (Github, Discord, ...) có icon đó không, bạn ghi dấu : và tên icon.\r\n\r\nCú pháp:\r\n\r\n![image](https://user-images.githubusercontent.com/90561566/160245877-ccf277ff-094f-482c-801b-4a8fe46471b7.png)\r\n\r\nKết quả:\r\n\r\n👁️\r\n\r\n> More information: https://github.com/lucthienphong1120/Github-Emojis\r\n\r\n### 5. Checkbox\r\n\r\nĐể chèn `checkbox/checked` (thường dùng cho to do list trên github) thì ta đánh dấu như list và thêm 1 cặp ngoặc vuông.\r\n\r\nCú pháp:\r\n\r\n```\r\n- [ ] Checkbox\r\n- [x] Checked\r\n```\r\n\r\nKết quả:\r\n\r\n- [ ] Checkbox\r\n- [x] Checked\r\n\r\n### 6. Escape markdown\r\n\r\nĐôi khi bạn sẽ cần những kí hiệu trùng với cú pháp của markdown. Để phân biệt, bạn chỉ cần thêm dấu \\ trước những kí hiệu đó là được.\r\n\r\nCú pháp:\r\n```\r\n\\`hai dấu nháy\\`\r\n\r\n\\*\\*\\*ba dấu sao hai bên\\*\\*\\*\r\n```\r\nKết quả:\r\n\r\n\\`hai dấu nháy\\`\r\n\r\n\\*\\*\\*ba dấu sao hai bên\\*\\*\\*\r\n\r\n# III. Kết thúc\r\n\r\nHy vọng qua bài viết này, bạn sẽ không còn thấy Markdown khó nữa và sẽ nắm được cách dùng Markdown trong nhiều việc của mình hơn nhé.\r\n\r\nNếu thấy hay hãy đừng ngần ngại mà thả 1 sao cho tôi, chúc bạn 1 ngày làm việc thật tốt!\r\n\r\n> Bạn có thể thoải mái đóng góp (contribute) hoặc liên kết (fork) dự án này.\r\n\r\n> You are free to contribute or fork this repo.');
+	(1, 'snt', 50, 1, 1024, 'Cho một số nguyên dương $N$, hãy kiểm tra xem số đó có phải là số nguyên tố hay không.\r\n\r\n### Đầu Vào (từ file `snt.inp`)\r\n- Một dòng duy nhất chứa số nguyên dương $N$ ($1 \\le N \\le 10^{12}$).\r\n\r\n### Đầu Ra (ra file `snt.out`)\r\n- Một dòng duy nhất chứa câu trả lời "`True`" hoặc "`False`".\r\n\r\n### Ví Dụ\r\n#### Sample Input #1\r\n\r\n```txt\r\n3\r\n```\r\n\r\n#### Sample Output #1\r\n\r\n```txt\r\nTrue\r\n```\r\n\r\n#### Sample Input #2\r\n\r\n```txt\r\n15\r\n```\r\n\r\n#### Sample Output #2\r\n\r\n```txt\r\nFalse\r\n```'),
+	(2, 'snt_', 50, 1.5, 1024, 'Cho $T$ số nguyên dương $N$, hãy kiểm tra xem mỗi số trong các số $N$ đó có phải là số nguyên tố hay không.\r\n\r\n### Đầu Vào (từ file `snt_.inp`)\r\n- Dòng đầu tiên chứa số nguyên dương $T$ ($1 \\le T \\le 10^6$)\r\n- Mỗi dòng trong $T$ dòng tiếp theo chứa một số nguyên dương $N$ ($1 \\le N \\le 10^9$).\r\n\r\n### Đầu Ra (ra file `snt_.out`)\r\n- Gồm $T$ dòng, mỗi dòng chưa câu trả lời "`True`" hoặc "`False`".\r\n\r\n### Ví Dụ\r\n#### Sample Input #1\r\n```txt\r\n2\r\n2\r\n9\r\n```\r\n\r\n#### Sample Output #1\r\n```txt\r\nTrue\r\nFalse\r\n```\r\n\r\n#### Sample Input #2\r\n```txt\r\n3\r\n5\r\n10\r\n15\r\n```\r\n\r\n#### Sample Output #2\r\n```txt\r\nTrue\r\nFalse\r\nFalse\r\n```');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `submissions`
---
-
-CREATE TABLE `submissions` (
-  `id` int(11) NOT NULL,
+-- Dumping structure for table online_judge.submissions
+CREATE TABLE IF NOT EXISTS `submissions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `problem_id` int(11) NOT NULL,
-  `status` enum('AC','WA','TLE','MLE','ER/IR','CE') DEFAULT 'WA',
+  `status` enum('AC','WA','TLE','MLE','ER/IR','CE','PENDING','NOT SUBMITTED') DEFAULT 'PENDING',
   `score` float DEFAULT 0,
   `submitted_at` timestamp NULL DEFAULT current_timestamp(),
   `backup_code` longtext DEFAULT NULL,
   `backup_logs` longtext DEFAULT NULL,
-  `language` varchar(10) NOT NULL DEFAULT 'UNKNOWN'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  `language` varchar(10) NOT NULL DEFAULT 'UNKNOWN',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `problem_id` (`problem_id`),
+  CONSTRAINT `submissions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `submissions_ibfk_2` FOREIGN KEY (`problem_id`) REFERENCES `problems` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
---
--- Dumping data for table `submissions`
---
-
+-- Dumping data for table online_judge.submissions: ~3 rows (approximately)
+DELETE FROM `submissions`;
 INSERT INTO `submissions` (`id`, `user_id`, `problem_id`, `status`, `score`, `submitted_at`, `backup_code`, `backup_logs`, `language`) VALUES
-(1, 1, 1, 'ER/IR', 0, '2025-02-14 06:43:51', '#include <bits/stdc++.h>\r\n\r\nusing namespace std;\r\nlong long n ;\r\nint main()\r\n{\r\n   // freopen(\"ABAI14.inp\",\"r\",stdin);\r\n   // freopen(\"ABAI14.out\",\"w\",stdout);\r\n    cin>>n;\r\n    if (n%3==0&&n%5==0)\r\n    cout <<1 ;\r\n    else\r\n        cout<<0;\r\n    return 0;\r\n}\r\n', '﻿admin‣abai: 0.00\r\nabai.cpp\r\n\"C:\\Program Files (x86)\\Themis\\gcc\\bin\\g++.exe\" -std=c++14 \"abai.cpp\" -pipe -O2 -s -static -lm -x c++ -o\"abai.exe\" -Wl,--stack,66060288|@WorkDir=C:\\ProgramData\\ThemisWorkSpace\\WaitRoom10446\\\r\nDịch thành công.\r\n\r\nadmin‣abai‣test01: 0.00\r\nChạy sinh lỗi\r\nCommand: \"C:\\ProgramData\\ThemisWorkSpace\\ContestRoom40026\\abai.exe\" terminated with exit code: 3221225794 (Hexadecimal: C0000142)\r\n', 'CPP'),
-(2, 1, 2, 'AC', 10, '2025-02-14 06:46:00', '#include <bits/stdc++.h>\r\n\r\nusing namespace std;\r\nlong long n ;\r\nint main()\r\n{\r\n    freopen(\"ABAI14.inp\",\"r\",stdin);\r\n    freopen(\"ABAI14.out\",\"w\",stdout);\r\n    cin>>n;\r\n    if (n%3==0&&n%5==0)\r\n    cout <<1 ;\r\n    else\r\n        cout<<0;\r\n    return 0;\r\n}\r\n', '﻿admin‣abai13: 10.00\r\nabai13.cpp\r\n\"C:\\Program Files (x86)\\Themis\\gcc\\bin\\g++.exe\" -std=c++14 \"abai13.cpp\" -pipe -O2 -s -static -lm -x c++ -o\"abai13.exe\" -Wl,--stack,66060288|@WorkDir=C:\\ProgramData\\ThemisWorkSpace\\WaitRoom20409\\\r\nDịch thành công.\r\n\r\nadmin‣abai13‣test01: 1.00\r\nThời gian ≈ 0.030227800 giây\r\nKết quả khớp đáp án!\r\nadmin‣abai13‣test02: 1.00\r\nThời gian ≈ 0.026791800 giây\r\nKết quả khớp đáp án!\r\nadmin‣abai13‣test03: 1.00\r\nThời gian ≈ 0.030131900 giây\r\nKết quả khớp đáp án!\r\nadmin‣abai13‣test04: 1.00\r\nThời gian ≈ 0.030431700 giây\r\nKết quả khớp đáp án!\r\nadmin‣abai13‣test05: 1.00\r\nThời gian ≈ 0.032495000 giây\r\nKết quả khớp đáp án!\r\nadmin‣abai13‣test06: 1.00\r\nThời gian ≈ 0.030278100 giây\r\nKết quả khớp đáp án!\r\nadmin‣abai13‣test07: 1.00\r\nThời gian ≈ 0.029588100 giây\r\nKết quả khớp đáp án!\r\nadmin‣abai13‣test08: 1.00\r\nThời gian ≈ 0.029702000 giây\r\nKết quả khớp đáp án!\r\nadmin‣abai13‣test09: 1.00\r\nThời gian ≈ 0.030105300 giây\r\nKết quả khớp đáp án!\r\nadmin‣abai13‣test10: 1.00\r\nThời gian ≈ 0.030698600 giây\r\nKết quả khớp đáp án!\r\n', 'CPP'),
-(3, 1, 1, 'ER/IR', 0, '2025-02-14 13:37:47', '#include <bits/stdc++.h>\r\n\r\nusing namespace std;\r\nlong long n ;\r\nint main()\r\n{\r\n    freopen(\"ABAI14.inp\",\"r\",stdin);\r\n    freopen(\"ABAI14.out\",\"w\",stdout);\r\n    cin>>n;\r\n    if (n%3==0&&n%5==0)\r\n    cout <<1 ;\r\n    else\r\n        cout<<0;\r\n    return 0;\r\n}\r\n', '﻿admin‣abai: 0.00\r\nabai.cpp\r\n\"C:\\Program Files (x86)\\Themis\\gcc\\bin\\g++.exe\" -std=c++14 \"abai.cpp\" -pipe -O2 -s -static -lm -x c++ -o\"abai.exe\" -Wl,--stack,66060288|@WorkDir=C:\\ProgramData\\ThemisWorkSpace\\WaitRoom63858\\\r\nDịch thành công.\r\n\r\nadmin‣abai‣test01: 0.00\r\nChạy sinh lỗi\r\nCommand: \"C:\\ProgramData\\ThemisWorkSpace\\ContestRoom64697\\abai.exe\" terminated with exit code: 3221225794 (Hexadecimal: C0000142)\r\n', 'CPP');
+	(1, 1, 2, 'TLE', 43, '2025-03-31 12:58:27', '#include <stdio.h>\r\n#include <math.h>\r\n\r\nint is_prime(long long n) {\r\n    if (n < 2) return 0;\r\n    if (n == 2) return 1;\r\n    if (n % 2 == 0) return 0;\r\n    for (long long i = 3; i * i <= n; i += 2) {\r\n        if (n % i == 0) return 0;\r\n    }\r\n    return 1;\r\n}\r\n\r\nint main() {\r\n    FILE *inp = fopen("snt_.inp", "r");\r\n    FILE *outp = fopen("snt_.out", "w");\r\n    \r\n    if (!inp || !outp) {\r\n        printf("Không thể mở file.\\n");\r\n        return 1;\r\n    }\r\n\r\n    int T;\r\n    fscanf(inp, "%d", &T);\r\n    \r\n    while (T--) {\r\n        long long a;\r\n        fscanf(inp, "%lld", &a);\r\n        fprintf(outp, "%s\\n", is_prime(a) ? "True" : "False");\r\n    }\r\n\r\n    fclose(inp);\r\n    fclose(outp);\r\n    return 0;\r\n}\r\n', '﻿admin‣snt_: 43.00\r\nsnt_.c\r\n"C:\\Program Files (x86)\\Themis\\gcc\\bin\\gcc.exe" -std=c11 "snt_.c" -pipe -O2 -s -static -lm -x c -o"snt_.exe" -Wl,--stack,66060288|@WorkDir=C:\\ProgramData\\ThemisWorkSpace\\WaitRoom30261\\\r\nDịch thành công.\r\n\r\nadmin‣snt_‣test01: 1.00\r\nThời gian ≈ 0.668122900 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test02: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test03: 1.00\r\nThời gian ≈ 0.042717800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test04: 1.00\r\nThời gian ≈ 0.053300200 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test05: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test06: 1.00\r\nThời gian ≈ 0.092038900 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test07: 1.00\r\nThời gian ≈ 0.031703300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test08: 1.00\r\nThời gian ≈ 0.032896700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test09: 1.00\r\nThời gian ≈ 0.067952000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test10: 1.00\r\nThời gian ≈ 0.051351400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test11: 1.00\r\nThời gian ≈ 0.054703700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test12: 1.00\r\nThời gian ≈ 0.079526300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test13: 1.00\r\nThời gian ≈ 0.076418400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test14: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test15: 1.00\r\nThời gian ≈ 0.036765100 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test16: 1.00\r\nThời gian ≈ 0.047707400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test17: 1.00\r\nThời gian ≈ 0.025599200 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test18: 1.00\r\nThời gian ≈ 0.075384100 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test19: 1.00\r\nThời gian ≈ 0.065457900 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test20: 1.00\r\nThời gian ≈ 0.079563500 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test21: 1.00\r\nThời gian ≈ 0.092857200 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test22: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test23: 1.00\r\nThời gian ≈ 0.027495300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test24: 1.00\r\nThời gian ≈ 0.060938600 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test25: 1.00\r\nThời gian ≈ 0.086855700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test26: 1.00\r\nThời gian ≈ 0.060615500 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test27: 1.00\r\nThời gian ≈ 0.045927200 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test28: 1.00\r\nThời gian ≈ 0.086617000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test29: 1.00\r\nThời gian ≈ 0.753755400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test30: 1.00\r\nThời gian ≈ 0.084959600 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test31: 1.00\r\nThời gian ≈ 0.086569800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test32: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test33: 1.00\r\nThời gian ≈ 0.029363700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test34: 1.00\r\nThời gian ≈ 0.082768600 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test35: 1.00\r\nThời gian ≈ 0.035265400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test36: 1.00\r\nThời gian ≈ 0.085671400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test37: 1.00\r\nThời gian ≈ 0.050652000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test38: 1.00\r\nThời gian ≈ 0.075766700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test39: 1.00\r\nThời gian ≈ 0.050966400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test40: 1.00\r\nThời gian ≈ 0.077405100 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test41: 1.00\r\nThời gian ≈ 0.071531200 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test42: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test43: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test44: 1.00\r\nThời gian ≈ 0.042754700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test45: 1.00\r\nThời gian ≈ 0.051933700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test46: 1.00\r\nThời gian ≈ 0.086011300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test47: 1.00\r\nThời gian ≈ 0.072795100 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test48: 1.00\r\nThời gian ≈ 0.030349300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test49: 1.00\r\nThời gian ≈ 0.080973900 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test50: 1.00\r\nThời gian ≈ 0.055862400 giây\r\nKết quả khớp đáp án!\r\n', 'C'),
+	(2, 1, 2, 'TLE', 43, '2025-03-31 12:58:37', '#include <stdio.h>\r\n#include <math.h>\r\n\r\nint is_prime(long long n) {\r\n    if (n < 2) return 0;\r\n    if (n == 2) return 1;\r\n    if (n % 2 == 0) return 0;\r\n    for (long long i = 3; i * i <= n; i += 2) {\r\n        if (n % i == 0) return 0;\r\n    }\r\n    return 1;\r\n}\r\n\r\nint main() {\r\n    FILE *inp = fopen("snt_.inp", "r");\r\n    FILE *outp = fopen("snt_.out", "w");\r\n    \r\n    if (!inp || !outp) {\r\n        printf("Không thể mở file.\\n");\r\n        return 1;\r\n    }\r\n\r\n    int T;\r\n    fscanf(inp, "%d", &T);\r\n    \r\n    while (T--) {\r\n        long long a;\r\n        fscanf(inp, "%lld", &a);\r\n        fprintf(outp, "%s\\n", is_prime(a) ? "True" : "False");\r\n    }\r\n\r\n    fclose(inp);\r\n    fclose(outp);\r\n    return 0;\r\n}\r\n', '﻿admin‣snt_: 43.00\r\nsnt_.c\r\n"C:\\Program Files (x86)\\Themis\\gcc\\bin\\gcc.exe" -std=c11 "snt_.c" -pipe -O2 -s -static -lm -x c -o"snt_.exe" -Wl,--stack,66060288|@WorkDir=C:\\ProgramData\\ThemisWorkSpace\\WaitRoom27072\\\r\nDịch thành công.\r\n\r\nadmin‣snt_‣test01: 1.00\r\nThời gian ≈ 0.643756700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test02: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test03: 1.00\r\nThời gian ≈ 0.042011100 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test04: 1.00\r\nThời gian ≈ 0.052150300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test05: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test06: 1.00\r\nThời gian ≈ 0.085982000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test07: 1.00\r\nThời gian ≈ 0.029660500 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test08: 1.00\r\nThời gian ≈ 0.029453300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test09: 1.00\r\nThời gian ≈ 0.066141800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test10: 1.00\r\nThời gian ≈ 0.050806800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test11: 1.00\r\nThời gian ≈ 0.052087800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test12: 1.00\r\nThời gian ≈ 0.077781000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test13: 1.00\r\nThời gian ≈ 0.078444300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test14: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test15: 1.00\r\nThời gian ≈ 0.024806700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test16: 1.00\r\nThời gian ≈ 0.045142900 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test17: 1.00\r\nThời gian ≈ 0.025922900 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test18: 1.00\r\nThời gian ≈ 0.076543000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test19: 1.00\r\nThời gian ≈ 0.050575400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test20: 1.00\r\nThời gian ≈ 0.063035200 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test21: 1.00\r\nThời gian ≈ 0.085891200 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test22: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test23: 1.00\r\nThời gian ≈ 0.028499700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test24: 1.00\r\nThời gian ≈ 0.064975700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test25: 1.00\r\nThời gian ≈ 0.090698800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test26: 1.00\r\nThời gian ≈ 0.059916700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test27: 1.00\r\nThời gian ≈ 0.046276500 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test28: 1.00\r\nThời gian ≈ 0.083506600 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test29: 1.00\r\nThời gian ≈ 0.745482200 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test30: 1.00\r\nThời gian ≈ 0.080058700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test31: 1.00\r\nThời gian ≈ 0.086739400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test32: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test33: 1.00\r\nThời gian ≈ 0.025602700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test34: 1.00\r\nThời gian ≈ 0.075194700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test35: 1.00\r\nThời gian ≈ 0.030233000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test36: 1.00\r\nThời gian ≈ 0.071850600 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test37: 1.00\r\nThời gian ≈ 0.045675100 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test38: 1.00\r\nThời gian ≈ 0.069040100 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test39: 1.00\r\nThời gian ≈ 0.046735000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test40: 1.00\r\nThời gian ≈ 0.070991600 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test41: 1.00\r\nThời gian ≈ 0.072448500 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test42: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test43: 0.00\r\nChạy quá thời gian\r\nadmin‣snt_‣test44: 1.00\r\nThời gian ≈ 0.041975400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test45: 1.00\r\nThời gian ≈ 0.057069500 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test46: 1.00\r\nThời gian ≈ 0.089770400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test47: 1.00\r\nThời gian ≈ 0.069876800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test48: 1.00\r\nThời gian ≈ 0.027471900 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test49: 1.00\r\nThời gian ≈ 0.078823600 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt_‣test50: 1.00\r\nThời gian ≈ 0.048737100 giây\r\nKết quả khớp đáp án!\r\n', 'C'),
+	(3, 1, 1, 'AC', 50, '2025-03-31 13:03:35', '#include <stdio.h>\r\n#include <math.h>\r\n\r\nint is_prime(long long n) {\r\n    if (n < 2) return 0;\r\n    if (n == 2) return 1;\r\n    if (n % 2 == 0) return 0;\r\n    for (long long i = 3; i * i <= n; i += 2) {\r\n        if (n % i == 0) return 0;\r\n    }\r\n    return 1;\r\n}\r\n\r\nint main() {\r\n    FILE *inp = fopen("snt.inp", "r");\r\n    FILE *outp = fopen("snt.out", "w");\r\n\r\n    int T=1;;\r\n    \r\n    while (T--) {\r\n        long long a;\r\n        fscanf(inp, "%lld", &a);\r\n        fprintf(outp, "%s\\n", is_prime(a) ? "True" : "False");\r\n    }\r\n\r\n    fclose(inp);\r\n    fclose(outp);\r\n    return 0;\r\n}\r\n', '﻿admin‣snt: 50.00\r\nsnt.c\r\n"C:\\Program Files (x86)\\Themis\\gcc\\bin\\gcc.exe" -std=c11 "snt.c" -pipe -O2 -s -static -lm -x c -o"snt.exe" -Wl,--stack,66060288|@WorkDir=C:\\ProgramData\\ThemisWorkSpace\\WaitRoom58960\\\r\nDịch thành công.\r\n\r\nadmin‣snt‣test01: 1.00\r\nThời gian ≈ 0.027398500 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test02: 1.00\r\nThời gian ≈ 0.026516200 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test03: 1.00\r\nThời gian ≈ 0.028614300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test04: 1.00\r\nThời gian ≈ 0.030990200 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test05: 1.00\r\nThời gian ≈ 0.028149100 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test06: 1.00\r\nThời gian ≈ 0.026299100 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test07: 1.00\r\nThời gian ≈ 0.026702800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test08: 1.00\r\nThời gian ≈ 0.025078900 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test09: 1.00\r\nThời gian ≈ 0.028141300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test10: 1.00\r\nThời gian ≈ 0.028477000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test11: 1.00\r\nThời gian ≈ 0.027536300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test12: 1.00\r\nThời gian ≈ 0.028178300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test13: 1.00\r\nThời gian ≈ 0.031233300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test14: 1.00\r\nThời gian ≈ 0.027354400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test15: 1.00\r\nThời gian ≈ 0.025951800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test16: 1.00\r\nThời gian ≈ 0.033133300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test17: 1.00\r\nThời gian ≈ 0.026666300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test18: 1.00\r\nThời gian ≈ 0.030601300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test19: 1.00\r\nThời gian ≈ 0.025886800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test20: 1.00\r\nThời gian ≈ 0.026452000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test21: 1.00\r\nThời gian ≈ 0.026526000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test22: 1.00\r\nThời gian ≈ 0.032271900 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test23: 1.00\r\nThời gian ≈ 0.034361000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test24: 1.00\r\nThời gian ≈ 0.028666600 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test25: 1.00\r\nThời gian ≈ 0.026125800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test26: 1.00\r\nThời gian ≈ 0.026133300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test27: 1.00\r\nThời gian ≈ 0.027946000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test28: 1.00\r\nThời gian ≈ 0.026209600 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test29: 1.00\r\nThời gian ≈ 0.025871100 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test30: 1.00\r\nThời gian ≈ 0.026178300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test31: 1.00\r\nThời gian ≈ 0.027399300 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test32: 1.00\r\nThời gian ≈ 0.028462200 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test33: 1.00\r\nThời gian ≈ 0.027106500 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test34: 1.00\r\nThời gian ≈ 0.027424400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test35: 1.00\r\nThời gian ≈ 0.035846400 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test36: 1.00\r\nThời gian ≈ 0.033778700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test37: 1.00\r\nThời gian ≈ 0.028148500 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test38: 1.00\r\nThời gian ≈ 0.031775500 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test39: 1.00\r\nThời gian ≈ 0.034737000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test40: 1.00\r\nThời gian ≈ 0.041668800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test41: 1.00\r\nThời gian ≈ 0.029233100 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test42: 1.00\r\nThời gian ≈ 0.026428800 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test43: 1.00\r\nThời gian ≈ 0.027182700 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test44: 1.00\r\nThời gian ≈ 0.025936900 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test45: 1.00\r\nThời gian ≈ 0.032132000 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test46: 1.00\r\nThời gian ≈ 0.029777500 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test47: 1.00\r\nThời gian ≈ 0.028027500 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test48: 1.00\r\nThời gian ≈ 0.027062900 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test49: 1.00\r\nThời gian ≈ 0.026045200 giây\r\nKết quả khớp đáp án!\r\nadmin‣snt‣test50: 1.00\r\nThời gian ≈ 0.028885600 giây\r\nKết quả khớp đáp án!\r\n', 'C');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+-- Dumping structure for table online_judge.users
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` enum('admin','student') NOT NULL DEFAULT 'student',
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `full_name` varchar(255) NOT NULL,
-  `class` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  `class` varchar(50) NOT NULL,
+  `school` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
---
--- Dumping data for table `users`
---
+-- Dumping data for table online_judge.users: ~1 rows (approximately)
+DELETE FROM `users`;
+INSERT INTO `users` (`id`, `username`, `password`, `role`, `created_at`, `full_name`, `class`, `school`) VALUES
+	(1, 'admin', '$2y$10$x1G1/YojYAsAl1.j8uSKnueanSm1mITN/yGs21fDN2BBwTW7GnFAu', 'admin', '2025-02-13 07:51:35', 'đây là họ và tên', '11 Tin', 'THPT Chuyên Bảo Lộc');
 
-INSERT INTO `users` (`id`, `username`, `password`, `role`, `created_at`, `full_name`, `class`) VALUES
-(1, 'admin', '$2y$10$4FubTlF1n5J45snAZq5X9OnMLHpTp8JwAfocs5Iq5swXlxoeL0PB2', 'admin', '2025-02-13 07:51:35', 'QTV', '11 Tin');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `contest_settings`
---
-ALTER TABLE `contest_settings`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `problems`
---
-ALTER TABLE `problems`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `name` (`name`);
-
---
--- Indexes for table `submissions`
---
-ALTER TABLE `submissions`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `problem_id` (`problem_id`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `contest_settings`
---
-ALTER TABLE `contest_settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `problems`
---
-ALTER TABLE `problems`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `submissions`
---
-ALTER TABLE `submissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `submissions`
---
-ALTER TABLE `submissions`
-  ADD CONSTRAINT `submissions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `submissions_ibfk_2` FOREIGN KEY (`problem_id`) REFERENCES `problems` (`id`) ON DELETE CASCADE;
-COMMIT;
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
