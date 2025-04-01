@@ -42,6 +42,7 @@ Tải về và Nhập cài đặt vào SQL từ file [online-judge-setup-databas
    - Cài đặt PHP có sẵn trong UniserverZ vào PATH hoặc sử dụng trực tiếp bằng cách sao chép đường dẫn.
    - Khởi chạy tệp `judge_worker.php`:
    ![image](https://i.postimg.cc/Hsb7817F/Screenshot-2025-04-01-201644.png)
+
 ----
 Thế là xong bước cài đặt ban đầu!
 
