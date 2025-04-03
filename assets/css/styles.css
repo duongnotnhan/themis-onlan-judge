@@ -55,6 +55,13 @@
     border-radius: 6px;
     overflow-x: auto;
 }
+#remainingSubmissionsWrapper {
+    position: relative;
+}
+#remainingSubmissionsBadge {
+    font-size: 0.8em;
+    white-space: nowrap;
+}
 .time { font-size: 12px; color: #6acbf7; }
 .score { font-size: 22px; }
 body {

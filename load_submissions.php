@@ -6,15 +6,25 @@ if (!isset($_SESSION['role'])) {
     header("Location: index.php");
     exit();
 }
-
-$stmt = $pdo->query("
-    SELECT s.id, s.score, s.status, s.language, p.name AS problem_name, 
-           p.total_score, u.username, s.submitted_at
-    FROM submissions s
-    JOIN users u ON s.user_id = u.id
-    JOIN problems p ON s.problem_id = p.id
-    ORDER BY s.submitted_at DESC
-");
+if ($_SESSION['role'] === 'admin') {
+    $stmt = $pdo->query("
+        SELECT s.id, s.score, s.status, s.language, p.name AS problem_name, 
+               p.total_score, u.username, s.submitted_at
+        FROM submissions s
+        JOIN users u ON s.user_id = u.id
+        JOIN problems p ON s.problem_id = p.id
+        ORDER BY s.submitted_at DESC
+    ");
+} else {
+    $stmt = $pdo->query("
+        SELECT s.id, s.score, s.status, s.language, p.name AS problem_name, 
+               p.total_score, u.username, s.submitted_at
+        FROM submissions s
+        JOIN users u ON s.user_id = u.id
+        JOIN problems p ON s.problem_id = p.id AND p.order_id >= 1
+        ORDER BY s.submitted_at DESC
+    ");
+}
 
 $submissions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

@@ -6,6 +6,11 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: auth.php");
     exit();
 }
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: auth.php");
+    exit();
+}
 
 $user_id = $_SESSION['user_id'];
 $stmt = $pdo->prepare("SELECT full_name, class, school FROM users WHERE id = ?");

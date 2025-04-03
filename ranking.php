@@ -3,7 +3,12 @@ session_start();
 require 'config.php';
 date_default_timezone_set("Asia/Ho_Chi_Minh");
 
-$problems = $pdo->query("SELECT id, name FROM problems ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
+$problems = $pdo->query("SELECT id, name FROM problems WHERE order_id >= 1 ORDER BY order_id ASC")->fetchAll(PDO::FETCH_ASSOC);
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: ranking.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -83,11 +88,11 @@ $problems = $pdo->query("SELECT id, name FROM problems ORDER BY id")->fetchAll(P
     <h2 class="text-center">Bảng Xếp Hạng</h2>
     <hr>
     <a href="export_results.php" class="btn btn-success mb-3">
-        <i class="bi bi-download"></i> Tải xuống Excel
+        <i class="bi bi-download"></i> Tải xuống CSV
     </a>
 
     <div class="table-responsive">
-        <table class="table table-dark table-bordered" id="rankingTable">
+        <table class="table table-dark table-striped table-hover" id="rankingTable">
             <thead class="table-light text-dark text-center">
                 <tr>
                     <th>#</th>

@@ -9,7 +9,7 @@ echo "\xEF\xBB\xBF";
 
 $fh = fopen('php://output', 'w');
 
-$problems = $pdo->query("SELECT id, name FROM problems ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
+$problems = $pdo->query("SELECT id, name FROM problems WHERE order_id >= 1 ORDER BY order_id ASC")->fetchAll(PDO::FETCH_ASSOC);
 $problem_ids = array_column($problems, 'id');
 
 $header = ['#', 'Họ và Tên', 'Username', 'Lớp', 'Trường'];
@@ -24,16 +24,17 @@ fputcsv($fh, $header);
 $rankings = $pdo->query("
     WITH ranked_users AS (
         SELECT u.id, u.full_name, u.username, u.class, u.school, 
-               COALESCE(SUM(s.max_score), 0) AS total_score,
-               COALESCE(SUM(s.time_diff), 0) AS total_time
+               COALESCE(SUM(CASE WHEN s.problem_id IN (".implode(',', $problem_ids).") THEN s.max_score ELSE 0 END), 0) AS total_score,
+               COALESCE(SUM(CASE WHEN s.problem_id IN (".implode(',', $problem_ids).") THEN s.time_diff ELSE 0 END), 0) AS total_time
         FROM users u
         LEFT JOIN (
             SELECT sub.user_id, sub.problem_id, sub.score AS max_score, 
                    TIMESTAMPDIFF(SECOND, cs.start_time, sub.submitted_at) AS time_diff
             FROM (
-                SELECT user_id, problem_id, score, submitted_at, 
-                       RANK() OVER (PARTITION BY user_id, problem_id ORDER BY score DESC, submitted_at ASC) AS rnk
-                FROM submissions
+                SELECT s.user_id, s.problem_id, s.score, s.submitted_at, 
+                       RANK() OVER (PARTITION BY s.user_id, s.problem_id ORDER BY s.score DESC, s.submitted_at ASC) AS rnk
+                FROM submissions s
+                WHERE s.problem_id IN (".implode(',', $problem_ids).")
             ) sub
             JOIN contest_settings cs ON cs.id = 1
             WHERE sub.rnk = 1
@@ -52,6 +53,7 @@ foreach ($rankings as $user) {
         SELECT s.problem_id, s.score, TIMESTAMPDIFF(SECOND, cs.start_time, s.submitted_at) AS time_diff
         FROM submissions s
         JOIN contest_settings cs ON cs.id = 1
+        JOIN problems p ON s.problem_id = p.id AND p.order_id >= 1
         WHERE s.user_id = $user_id
         AND (s.score, s.submitted_at) = (
             SELECT sub2.score, sub2.submitted_at

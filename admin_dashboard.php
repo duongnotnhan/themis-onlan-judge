@@ -76,6 +76,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contest_settings'])) 
     header("Location: admin_dashboard.php");
     exit();
 }
+$stmt = $pdo->query("SELECT * FROM problems ORDER BY order_id ASC");
+$problems = $stmt->fetchAll();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_problems'])) {
+    $selectedProblems = $_POST['selected_problems'] ?? [];
+    $submissionLimits = $_POST['submission_limit'] ?? [];
+    $orderIds = $_POST['order_id'] ?? [];
+
+    $pdo->query("UPDATE problems SET order_id = -1");
+
+    foreach ($selectedProblems as $index => $problemId) {
+        $submissionLimit = $submissionLimits[$index] ?? -1;
+        $orderId = $orderIds[$index] ?? ($index + 1);
+
+        $stmt = $pdo->prepare("UPDATE problems SET order_id = ?, submissions_limit = ? WHERE id = ?");
+        $stmt->execute([$orderId, $submissionLimit, $problemId]);
+    }
+
+    echo "<script>alert('Lưu danh sách bài thi thành công!'); window.location.href = 'admin_dashboard.php';</script>";
+    exit();
+}
 if (isset($_GET['logout'])) {
     session_destroy();
     header("Location: auth.php");
@@ -178,8 +199,57 @@ $problems = $stmt->fetchAll();
             <button type="submit" name="contest_settings" class="btn btn-primary">Lưu thay đổi</button>
         </form>
 
-        <h2 class="mt-5">Danh Sách Đề Bài</h2><small>(tất cả đều sẽ được sử dụng trong kỳ thi)</small>
-        <br>Xem tại <a href="problems.php">Đây</a>
+        <h2 class="mt-5">Chọn Đề Bài Cho Kỳ Thi</h2>
+        <form method="POST" class="bg-secondary p-3 rounded">
+            <label class="form-label">Chọn đề bài:</label>
+            <select id="problem-select" class="form-control mb-3">
+                <option value="">--Chọn đề bài--</option>
+                <?php foreach ($problems as $problem): ?>
+                    <option value="<?= $problem['id'] ?>"><?= htmlspecialchars($problem['name']) ?></option>
+                <?php endforeach; ?>
+            </select>
+            
+            <table class="table table-dark table-bordered table-hover rounded-3 shadow-lg">
+                <thead class="table-light text-dark text-center">
+                    <tr>
+                        <th style="width:10%">Thứ Tự</th>
+                        <th>Tên Bài</th>
+                        <th style="width:25%">Giới Hạn Lần Nộp<br /><small>(để -1 nếu không giới hạn)</small></th>
+                        <th style="width:10%">Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody id="problems-table">
+                    <?php 
+                    $totalProblems = count($problems);
+                    foreach ($problems as $problem): 
+                        if ($problem['order_id'] != -1): 
+                            $problemId = (int) $problem['id']; 
+                            $orderId = (int) $problem['order_id'];
+                            $problemName = htmlspecialchars($problem['name']);
+                            $submissionLimit = (int) $problem['submissions_limit'];
+                    ?>
+                        <tr data-id="<?= $problemId ?>">
+                            <td>
+                                <input type="number" name="order_id[]" value="<?= $orderId ?>" 
+                                    class="form-control" required 
+                                    min="1" max="<?= $totalProblems ?>">
+                            </td>
+                            <td><?= $problemName ?></td>
+                            <td>
+                                <input type="number" name="submission_limit[]" value="<?= $submissionLimit ?>" 
+                                    class="form-control" required 
+                                    min="-1" max="99">
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm remove-problem">Xóa</button>
+                                <input type="hidden" name="selected_problems[]" value="<?= $problemId ?>">
+                            </td>
+                        </tr>
+                    <?php endif; endforeach; ?>
+                </tbody>
+            </table>
+            <button type="submit" name="save_problems" class="btn btn-success mt-3">Lưu Danh Sách</button>
+        </form>
 
         <h2 class="mt-5">Cài Đặt Đăng Ký</h2>
         <form method="POST" class="bg-secondary p-3 rounded">
@@ -209,6 +279,46 @@ $problems = $stmt->fetchAll();
             <button type="submit" name="resetstudentpassword" class="btn btn-warning">Thực Thi</button>
         </form>
     </div>
+    <script>
+        document.getElementById('problem-select').addEventListener('change', function() {
+            let selectedId = this.value;
+            if (!selectedId) return;
+
+            let tableBody = document.getElementById('problems-table');
+            let exists = [...tableBody.children].some(row => row.getAttribute('data-id') === selectedId);
+
+            if (!exists) {
+                let selectedOption = this.options[this.selectedIndex].text;
+                let newRow = document.createElement('tr');
+                newRow.setAttribute('data-id', selectedId);
+                newRow.innerHTML = `
+                    <td><input type="number" name="order_id[]" value="${tableBody.children.length + 1}" class="form-control" required></td>
+                    <td>${selectedOption}</td>
+                    <td><input type="number" name="submission_limit[]" value="-1" class="form-control"></td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm remove-problem">Xóa</button>
+                        <input type="hidden" name="selected_problems[]" value="${selectedId}">
+                    </td>
+                `;
+                tableBody.appendChild(newRow);
+            }
+        });
+
+        document.getElementById('problems-table').addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-problem')) {
+                let row = e.target.closest('tr');
+                row.remove();
+                updateOrderIds();
+            }
+        });
+
+        function updateOrderIds() {
+            let rows = document.querySelectorAll('#problems-table tr');
+            rows.forEach((row, index) => {
+                row.querySelector('input[name="order_id[]"]').value = index + 1;
+            });
+        }
+    </script>
 </body>
 <footer>
     <div class="text-center mt-3">

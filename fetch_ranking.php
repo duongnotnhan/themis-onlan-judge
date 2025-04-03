@@ -1,4 +1,5 @@
 <?php
+session_start();
 require 'config.php';
 date_default_timezone_set("Asia/Ho_Chi_Minh");
 
@@ -12,9 +13,10 @@ $rankings = $pdo->query("
             SELECT sub.user_id, sub.problem_id, sub.score AS max_score, 
                    TIMESTAMPDIFF(SECOND, cs.start_time, sub.submitted_at) AS time_diff
             FROM (
-                SELECT user_id, problem_id, score, submitted_at, 
-                       RANK() OVER (PARTITION BY user_id, problem_id ORDER BY score DESC, submitted_at ASC) AS rnk
-                FROM submissions
+                SELECT s.user_id, s.problem_id, s.score, s.submitted_at, 
+                       RANK() OVER (PARTITION BY s.user_id, s.problem_id ORDER BY s.score DESC, s.submitted_at ASC) AS rnk
+                FROM submissions s
+                JOIN problems p ON s.problem_id = p.id AND p.order_id >= 1
             ) sub
             JOIN contest_settings cs ON cs.id = 1
             WHERE sub.rnk = 1

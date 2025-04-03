@@ -48,16 +48,31 @@ if (!is_dir($submission_path)) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT id FROM problems WHERE LOWER(name) = LOWER(?)");
+$stmt = $pdo->prepare("SELECT id, submissions_limit FROM problems WHERE LOWER(name) = LOWER(?)");
 $stmt->execute([$problem_name]);
 $problem = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$problem) {
-    echo json_encode(["error" => "Bài tập không hợp lệ"]);
+    echo json_encode(["error" => "Đề bài không hợp lệ"]);
     exit;
 }
 
 $problem_id = $problem['id'];
+$submissions_limit = $problem['submissions_limit'];
+
+if ($submissions_limit != -1) {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM submissions WHERE user_id = ? AND problem_id = ?");
+    $stmt->execute([$user_id, $problem_id]);
+    $submissions_count = $stmt->fetchColumn();
+    
+    if ($submissions_count >= $submissions_limit) {
+        echo json_encode(["error" => "Bạn đã đạt giới hạn số lần nộp bài cho đề bài này ($submissions_limit lần)"]);
+        exit;
+    }
+    
+    $remaining_submissions = $submissions_limit - $submissions_count - 1;
+}
+
 $language = "";
 $backup_code = "";
 
@@ -89,5 +104,10 @@ $stmt = $pdo->prepare("INSERT INTO submissions (user_id, problem_id, submitted_a
                        VALUES (?, ?, ?, ?, ?, ?)");
 $stmt->execute([$user_id, $problem_id, $current_time_sql, $status, $backup_code, $language]);
 
-echo json_encode(["success" => "Nộp bài thành công!", "status" => $status]);
+$message = "Nộp bài thành công!";
+if ($submissions_limit != -1) {
+    $message .= " Bạn còn $remaining_submissions lần nộp bài cho đề bài này.";
+}
+
+echo json_encode(["success" => $message, "status" => $status]);
 exit;

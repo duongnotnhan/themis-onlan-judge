@@ -62,7 +62,7 @@ const md = markdownit({
     breaks: true
 });
 
-function viewProblem(problemName) {
+function viewProblem(problemName) {    
     $.ajax({
         url: "get_problem.php",
         type: "GET",
@@ -73,7 +73,60 @@ function viewProblem(problemName) {
             $("#problemScore").text(response.total_score);
             $("#problemTime").text(response.time_limit);
             $("#problemMemory").text(response.memory_limit);
-
+            
+            const submissionsLimitText = response.submissions_limit == -1 
+                ? "Không giới hạn" 
+                : response.submissions_limit + " lần";
+            $("#submissionsLimit").text(submissionsLimitText);
+            
+            let $submitContainer = $("#submitButtonContainer");
+            if ($submitContainer.length === 0) {
+                $submitContainer = $(`
+                    <center><div id="submitButtonContainer" class="position-relative mt-3">
+                        <div id="remainingSubmissionsWrapper" class="d-inline-block position-relative">
+                            <button class="btn btn-success" onclick="showSubmitForm()">Nộp Bài</button>
+                            <div id="remainingSubmissionsBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info" style="display: none;">
+                                <span id="remainingSubmissionsCount">0</span> lần còn lại
+                            </div>
+                        </div>
+                    </div></center>
+                `);
+                $(".markdown-content").before($submitContainer);
+            } else {
+                $("#remainingSubmissionsBadge").hide().removeClass("bg-warning").addClass("bg-info");
+            }
+            
+            if (response.submissions_limit != -1) {
+                $.ajax({
+                    url: "get_remaining_submissions.php",
+                    type: "GET",
+                    data: { problem_name: problemName },
+                    dataType: "json",
+                    success: function(subResponse) {
+                        const remaining = subResponse.remaining;
+                        const $badge = $("#remainingSubmissionsBadge");
+                        
+                        $badge.show();
+                        $("#remainingSubmissionsCount").text(remaining);
+                        
+                        if (remaining <= 2) {
+                            $badge.removeClass("bg-info").addClass("bg-warning");
+                        }
+                        
+                        if (remaining <= 0) {
+                            $submitContainer.find("button")
+                                .prop("disabled", true)
+                                .removeClass("btn-success")
+                                .addClass("btn-secondary");
+                            $badge.text("Hết lượt nộp").removeClass("bg-warning").addClass("bg-danger");
+                        }
+                    },
+                    error: function() {
+                        $("#remainingSubmissionsBadge").text("Lỗi tải dữ liệu").show();
+                    }
+                });
+            }
+            
             let renderedMarkdown = md.render(response.description);
             $("#problemDescription").html(renderedMarkdown);
 
@@ -85,8 +138,8 @@ function viewProblem(problemName) {
                 throwOnError: false 
             });
 
-			Prism.highlightAll();
-
+            Prism.highlightAll();
+            
             $("#problemModal").modal("show");
         },
         error: function () {
@@ -94,7 +147,6 @@ function viewProblem(problemName) {
         }
     });
 }
-
 
 function updateCountdown() {
     let startTime = parseInt(document.getElementById("countdown").dataset.startTime) * 1000;

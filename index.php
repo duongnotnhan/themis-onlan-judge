@@ -11,7 +11,7 @@ $startTime = strtotime($contest['start_time']);
 $endTime = strtotime($contest['end_time']);
 $now = time();
 
-$problems = $pdo->query("SELECT * FROM problems")->fetchAll(PDO::FETCH_ASSOC);
+$problems = $pdo->query("SELECT * FROM problems WHERE order_id >= 1 ORDER BY order_id ASC")->fetchAll(PDO::FETCH_ASSOC);
 
 $rankings = $pdo->query("
     SELECT u.username, COALESCE(SUM(max_score), 0) AS total_score
@@ -128,9 +128,9 @@ if (isset($_GET['logout'])) {
                             <tr>
 								<th style="width: 20%;">Tên bài</th>
 								<th style="width: 5%;">Điểm</th>
-								<th style="width: 20%;">Time-limit</th>
-								<th style="width: 20%;">Memory-limit</th>
-								<th style="width: 25%;"></th>
+								<th style="min-width: 20%;">Time-limit</th>
+								<th style="min-width: 20%;">Memory-limit</th>
+								<th style="width: auto;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -140,12 +140,10 @@ if (isset($_GET['logout'])) {
                                 <td class="text-center"><?= htmlspecialchars($problem['total_score']) ?></td>
                                 <td class="text-center"><?= htmlspecialchars($problem['time_limit']) ?>s</td>
                                 <td class="text-center"><?= htmlspecialchars($problem['memory_limit']) ?>MiB</td>
-                                <td>
-                                    <button class="btn btn-info btn-sm" onclick="viewProblem('<?= htmlspecialchars($problem['name']) ?>')">Xem</button>
+                                <td class="text-center">
+                                    <button class="btn btn-info btn-sm" onclick="viewProblem('<?= htmlspecialchars($problem['name']) ?>')"><i class="bi bi-eye"></i> Xem</button>
                                     <?php if (isset($_SESSION['user_id'])): ?>
-										<button class="btn btn-secondary btn-sm viewHistory" data-problem="<?php echo $problem['name']; ?>">
-                                            Lịch sử nộp
-                                        </button>
+										<button class="btn btn-secondary btn-sm viewHistory" data-problem="<?php echo $problem['name']; ?>"><i class="bi bi-clock-history"></i> Lịch Sử</button>
                                     <?php endif; ?>
 
 									<div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
@@ -210,12 +208,12 @@ if (isset($_GET['logout'])) {
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-				<div class="d-flex justify-content-center text-center gap-4">
+				<div class="d-flex justify-content-center text-center gap-4" style="margin-bottom:15px;">
 					<div><strong>Điểm tổng:</strong> <span id="problemScore"></span></div>
 					<div><strong>Thời gian:</strong> <span id="problemTime"></span> giây</div>
 					<div><strong>Bộ nhớ:</strong> <span id="problemMemory"></span> MiB</div>
+					<div><strong>Giới hạn lần nộp:</strong> <span id="submissionsLimit"></span></div>
 				</div>
-				<button class="btn btn-success float-end" onclick="showSubmitForm()">Nộp Bài</button>
 				<div class="markdown-content">
 					<div id="problemDescription"></div>
 				</div>
@@ -293,6 +291,7 @@ if (isset($_GET['logout'])) {
                 }
             });
         });
+		fetchRanking();
     </script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
 </body>
