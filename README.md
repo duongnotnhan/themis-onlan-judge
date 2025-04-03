@@ -83,17 +83,18 @@ Hiển thị danh sách đề bài nằm trong hệ thống trang web.
     Quản Trị Viên có thể tạo đề bài mới cho kỳ thi:
 
     ![image](https://github.com/user-attachments/assets/24b63683-db44-4020-ae98-2bf1f61c96b7)
-    **Lưu Ý:** Các thông tin như Tên Đề Bài, Tổng Điểm, TL, ML cần phải khớp với máy chấm Themis.
-2. Sửa Đề Bài
+
+   **Lưu Ý:** Các thông tin như Tên Đề Bài, Tổng Điểm, TL, ML cần phải khớp với máy chấm Themis.
+3. Sửa Đề Bài
 
     Sửa lại thông tin đề bài tương ứng.
-3. Xóa Đề Bài
+4. Xóa Đề Bài
 
     Xóa đề bài khỏi hệ thống kỳ thi.
 
 ### Lịch Sử Nộp Bài
 
-![image](https://i.postimg.cc/4KNGJXzm/screenshot-3.png)
+![image](https://i.postimg.cc/VzV010cT/screenshot-3.png)
 
 #### Đối Với Người Dùng Thường
 
@@ -107,7 +108,7 @@ Có thể xem trạng thái, danh sách bài nộp của tất cả thí sinh tr
 
 Tất cả Người Dùng đều có thể tham gia kỳ thi, đọc đề bài cũng như nộp bài lên hệ thống.
 
-![image](https://i.postimg.cc/qhWHXnW3/Screenshot-2025-04-03-134027.png)
+![image](https://i.postimg.cc/sjpMpnZd/Screenshot-2025-04-03-134027.png)
 
 ## Vấn Đề & Bổ Sung Sắp Tới
 
