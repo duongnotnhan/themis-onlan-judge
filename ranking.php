@@ -5,29 +5,33 @@ date_default_timezone_set("Asia/Ho_Chi_Minh");
 
 $problems = $pdo->query("SELECT id, name FROM problems WHERE order_id >= 1 ORDER BY order_id ASC")->fetchAll(PDO::FETCH_ASSOC);
 if (isset($_GET['logout'])) {
-    session_destroy();
-    header("Location: ranking.php");
-    exit;
+	session_destroy();
+	header("Location: ranking.php");
+	exit;
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảng Xếp Hạng</title>
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <style>
-        table th, table td { text-align: center; vertical-align: middle; }
-    </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<title>Bảng Xếp Hạng</title>
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/bootstrap-icons.css">
+	<link rel="stylesheet" href="assets/css/styles.css">
+	<style>
+		table th, table td { text-align: center; vertical-align: middle; }
+	</style>
 </head>
 <body class="bg-dark text-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
 		<div class="container">
-			<a class="navbar-brand" href="index.php">OnLAN Judge</a>
+			<a class="navbar-brand" href="index.php">Themis OnLAN Judge</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -85,47 +89,48 @@ if (isset($_GET['logout'])) {
 		</div>
 	</nav>
 <div class="container mt-4">
-    <h2 class="text-center">Bảng Xếp Hạng</h2>
-    <hr>
-    <a href="export_results.php" class="btn btn-success mb-3">
-        <i class="bi bi-download"></i> Tải xuống CSV
-    </a>
+	<h2 class="text-center">Bảng Xếp Hạng</h2>
+	<hr>
+	<a href="export_results.php" class="btn btn-success mb-3">
+		<i class="bi bi-download"></i> Tải xuống CSV
+	</a>
 
-    <div class="table-responsive">
-        <table class="table table-dark table-striped table-hover" id="rankingTable">
-            <thead class="table-light text-dark text-center">
-                <tr>
-                    <th>#</th>
-                    <th>Thí Sinh</th>
-                    <?php foreach ($problems as $problem): ?>
-                        <th><?= htmlspecialchars($problem['name']) ?></th>
-                    <?php endforeach; ?>
-                    <th>Tổng Điểm</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
+	<div class="table-responsive">
+		<table class="table table-dark table-striped table-hover" id="rankingTable">
+			<thead class="table-light text-dark text-center">
+				<tr>
+					<th>#</th>
+					<th>Thí Sinh</th>
+					<?php foreach ($problems as $problem): ?>
+						<th><?= htmlspecialchars($problem['name']) ?></th>
+					<?php endforeach; ?>
+					<th>Tổng Điểm</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
 </div>
 
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 <script>
-    function updateRanking() {
-        fetch('fetch_fullranking.php')
-            .then(response => response.text())
-            .then(html => {
-                document.querySelector('#rankingTable tbody').innerHTML = html;
-            })
-            .catch(error => console.error('Lỗi cập nhật BXH:', error));
-    }
-    setInterval(updateRanking, 5000);
-    updateRanking();
+	function updateRanking() {
+		fetch('fetch_fullranking.php')
+			.then(response => response.text())
+			.then(html => {
+				document.querySelector('#rankingTable tbody').innerHTML = html;
+			})
+			.catch(error => console.error('Lỗi cập nhật BXH:', error));
+	}
+	setInterval(updateRanking, 5000);
+	updateRanking();
 </script>
 </body>
 <footer>
-    <div class="text-center mt-3">
-        <p>DuongNhanAC × ayor</p>
-    </div>
+	<div class="text-center mt-3">
+		<p>from <b>DuongNhanAC</b> × <b>ayor</b> with love <i class="bi bi-hearts"></i><br />
+		<a href="https://github.com/duongnotnhan/themis-onlan-judge"><i class="bi bi-github"></i> Source Code</a></p>
+	</div>
 </footer>
 </html>

@@ -3,13 +3,13 @@ session_start();
 require 'config.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: auth.php");
-    exit();
+	header("Location: auth.php");
+	exit();
 }
 if (isset($_GET['logout'])) {
-    session_destroy();
-    header("Location: auth.php");
-    exit();
+	session_destroy();
+	header("Location: auth.php");
+	exit();
 }
 
 $user_id = $_SESSION['user_id'];
@@ -21,36 +21,40 @@ $error = "";
 $success = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $full_name = trim($_POST['full_name']);
-    $class = trim($_POST['class']);
-    $school = trim($_POST['school']);
+	$full_name = trim($_POST['full_name']);
+	$class = trim($_POST['class']);
+	$school = trim($_POST['school']);
 
-    if ($full_name === "" || $class === "" || $school === "") {
-        $error = "Vui lòng điền đầy đủ thông tin!";
-    } else {
-        $stmt = $pdo->prepare("UPDATE users SET full_name = ?, class = ?, school = ? WHERE id = ?");
-        $stmt->execute([$full_name, $class, $school, $user_id]);
-        $success = "Cập nhật thành công!";
-        $_SESSION['full_name'] = $full_name;
-    }
+	if ($full_name === "" || $class === "" || $school === "") {
+		$error = "Vui lòng điền đầy đủ thông tin!";
+	} else {
+		$stmt = $pdo->prepare("UPDATE users SET full_name = ?, class = ?, school = ? WHERE id = ?");
+		$stmt->execute([$full_name, $class, $school, $user_id]);
+		$success = "Cập nhật thành công!";
+		$_SESSION['full_name'] = $full_name;
+	}
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chỉnh Sửa Thông Tin Cá Nhân</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<title>Chỉnh Sửa Thông Tin Cá Nhân</title>
 	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
+	<link rel="stylesheet" href="assets/css/bootstrap-icons.css">
+	<link rel="stylesheet" href="assets/css/styles.css">
 	<script src="assets/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="bg-dark text-light">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
 		<div class="container">
-			<a class="navbar-brand" href="index.php">OnLAN Judge</a>
+			<a class="navbar-brand" href="index.php">Themis OnLAN Judge</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -108,36 +112,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		</div>
 	</nav>
 <div class="container mt-5">
-    <h2>Thông Tin Cá Nhân</h2>
-    <hr>
-    <?php if ($error): ?>
-        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
-    <?php if ($success): ?>
-        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-    <?php endif; ?>
+	<h2>Thông Tin Cá Nhân</h2>
+	<hr>
+	<?php if ($error): ?>
+		<div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+	<?php endif; ?>
+	<?php if ($success): ?>
+		<div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+	<?php endif; ?>
 
-    <form method="POST" class="bg-secondary p-4 rounded" style="margin-bottom:15px;">
-        <div class="mb-3">
-            <label for="full_name" class="form-label">Họ và tên</label>
-            <input type="text" class="form-control" id="full_name" name="full_name" value="<?= htmlspecialchars($user['full_name']) ?>" required>
-        </div>
-        <div class="mb-3">
-            <label for="class" class="form-label">Lớp</label>
-            <input type="text" class="form-control" id="class" name="class" value="<?= htmlspecialchars($user['class']) ?>" required>
-        </div>
-        <div class="mb-3">
-            <label for="school" class="form-label">Trường</label>
-            <input type="text" class="form-control" id="school" name="school" value="<?= htmlspecialchars($user['school']) ?>" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-        <a href="index.php" class="btn btn-secondary">Hủy</a>
-    </form>
+	<form method="POST" class="bg-secondary p-4 rounded" style="margin-bottom:15px;">
+		<div class="mb-3">
+			<label for="full_name" class="form-label">Họ và tên</label>
+			<input type="text" class="form-control" id="full_name" name="full_name" value="<?= htmlspecialchars($user['full_name']) ?>" required>
+		</div>
+		<div class="mb-3">
+			<label for="class" class="form-label">Lớp</label>
+			<input type="text" class="form-control" id="class" name="class" value="<?= htmlspecialchars($user['class']) ?>" required>
+		</div>
+		<div class="mb-3">
+			<label for="school" class="form-label">Trường</label>
+			<input type="text" class="form-control" id="school" name="school" value="<?= htmlspecialchars($user['school']) ?>" required>
+		</div>
+		<button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+		<a href="index.php" class="btn btn-secondary">Hủy</a>
+	</form>
 </div>
 </body>
 <footer>
-    <div class="text-center mt-3">
-        <p>DuongNhanAC × ayor</p>
-    </div>
+	<div class="text-center mt-3">
+		<p>from <b>DuongNhanAC</b> × <b>ayor</b> with love <i class="bi bi-hearts"></i><br />
+		<a href="https://github.com/duongnotnhan/themis-onlan-judge"><i class="bi bi-github"></i> Source Code</a></p>
+	</div>
 </footer>
 </html>

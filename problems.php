@@ -3,27 +3,27 @@ session_start();
 require 'config.php';
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header("Location: index.php");
-    exit();
+	header("Location: index.php");
+	exit();
 }
 
 if (isset($_POST['delete_id'])) {
-    $id = $_POST['delete_id'];
+	$id = $_POST['delete_id'];
 
-    $stmt = $pdo->prepare("DELETE FROM submissions WHERE problem_id=?");
-    $stmt->execute([$id]);
+	$stmt = $pdo->prepare("DELETE FROM submissions WHERE problem_id=?");
+	$stmt->execute([$id]);
 
-    $stmt = $pdo->prepare("DELETE FROM problems WHERE id=?");
-    $stmt->execute([$id]);
+	$stmt = $pdo->prepare("DELETE FROM problems WHERE id=?");
+	$stmt->execute([$id]);
 
-    header("Location: problems.php");
-    exit();
+	header("Location: problems.php");
+	exit();
 }
 
 if (isset($_GET['logout'])) {
-    session_destroy();
-    header("Location: auth.php");
-    exit();
+	session_destroy();
+	header("Location: auth.php");
+	exit();
 }
 
 $stmt = $pdo->query("SELECT id, name, total_score, time_limit, memory_limit FROM problems");
@@ -33,21 +33,25 @@ $problems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh Sách Đề Bài</title>
-    <link href="assets/css/prism.css" rel="stylesheet">
-    <script src="assets/js/prism.js"></script>
-    <script src="assets/js/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<title>Danh Sách Đề Bài</title>
+	<link href="assets/css/prism.css" rel="stylesheet">
+	<script src="assets/js/prism.js"></script>
+	<script src="assets/js/jquery-3.6.0.min.js"></script>
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/bootstrap-icons.css">
+	<link rel="stylesheet" href="assets/css/styles.css">
 	<script src="assets/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="bg-dark text-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
 		<div class="container">
-			<a class="navbar-brand" href="index.php">OnLAN Judge</a>
+			<a class="navbar-brand" href="index.php">Themis OnLAN Judge</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -105,60 +109,61 @@ $problems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		</div>
 	</nav>
 <div class="container mt-5">
-    <h2>Danh Sách Đề Bài</h2>
-    <hr>
-    <a href="create_problem.php" class="btn btn-success float-end"><i class="bi bi-plus-circle"></i> Tạo Đề Bài</a>
-    <table class="table table-dark table-striped table-hover mt-3 table-bordered">
-        <thead class="table-light text-dark text-center">
-            <tr>
-            <th style="width: 20%;">Tên bài</th>
+	<h2>Danh Sách Đề Bài</h2>
+	<hr>
+	<a href="create_problem.php" class="btn btn-success float-end"><i class="bi bi-plus-circle"></i> Tạo Đề Bài</a>
+	<table class="table table-dark table-striped table-hover mt-3 table-bordered">
+		<thead class="table-light text-dark text-center">
+			<tr>
+			<th style="width: 20%;">Tên bài</th>
 			<th style="width: 5%;">Điểm</th>
 			<th style="width: 20%;">Time-limit (s)</th>
 			<th style="width: 20%;">Memory-limit (MiB)</th>
-            <th>Sửa Đề Bài</th>
-            <th>Xóa Bài</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($problems as $problem): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($problem['name']); ?></td>
-                    <td class="text-center"><?php echo htmlspecialchars($problem['total_score']); ?></td>
-                    <td class="text-center"><?php echo htmlspecialchars($problem['time_limit']); ?></td>
-                    <td class="text-center"><?php echo htmlspecialchars($problem['memory_limit']); ?></td>
-                    <td class="text-center">
-                        <?php if ($_SESSION['role'] === 'admin'): ?>
-                            <a href="edit_problem.php?id=<?php echo $problem['id']; ?>" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Sửa</a>
-                        <?php else: ?>
-                            <span class="text-muted"><small>Đừng Nhìn Tôi</small></span>
-                        <?php endif; ?>
-                    </td>
-                    <td class="text-center">
-                        <?php if ($_SESSION['role'] === 'admin'): ?>
-                            <form method="POST" onsubmit="return confirmDelete(<?php echo $problem['id']; ?>, '<?php echo htmlspecialchars($problem['name'], ENT_QUOTES, 'UTF-8'); ?>');">
-                                <input type="hidden" name="delete_id" value="<?php echo $problem['id']; ?>">
-                                <button type="submit" class="btn btn-danger"><i class="bi bi-trash3"></i> Xóa</button>
-                            </form>
-                        <?php else: ?>
-                            <span class="text-muted"><small>Đừng Nhìn Tôi</small></span>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+			<th>Sửa Đề Bài</th>
+			<th>Xóa Bài</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ($problems as $problem): ?>
+				<tr>
+					<td><?php echo htmlspecialchars($problem['name']); ?></td>
+					<td class="text-center"><?php echo htmlspecialchars($problem['total_score']); ?></td>
+					<td class="text-center"><?php echo htmlspecialchars($problem['time_limit']); ?></td>
+					<td class="text-center"><?php echo htmlspecialchars($problem['memory_limit']); ?></td>
+					<td class="text-center">
+						<?php if ($_SESSION['role'] === 'admin'): ?>
+							<a href="edit_problem.php?id=<?php echo $problem['id']; ?>" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Sửa</a>
+						<?php else: ?>
+							<span class="text-muted"><small>Đừng Nhìn Tôi</small></span>
+						<?php endif; ?>
+					</td>
+					<td class="text-center">
+						<?php if ($_SESSION['role'] === 'admin'): ?>
+							<form method="POST" onsubmit="return confirmDelete(<?php echo $problem['id']; ?>, '<?php echo htmlspecialchars($problem['name'], ENT_QUOTES, 'UTF-8'); ?>');">
+								<input type="hidden" name="delete_id" value="<?php echo $problem['id']; ?>">
+								<button type="submit" class="btn btn-danger"><i class="bi bi-trash3"></i> Xóa</button>
+							</form>
+						<?php else: ?>
+							<span class="text-muted"><small>Đừng Nhìn Tôi</small></span>
+						<?php endif; ?>
+					</td>
+				</tr>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
 </div>
 
 <script>
 function confirmDelete(problemId, problemName) {
-    return confirm(`CẢNH BÁO!\n\nBạn sắp xóa đề bài: "${problemName}".\nĐiều này sẽ xóa toàn bộ bài nộp liên quan đến đề bài này!\n\nBạn có chắc chắn muốn tiếp tục?`);
+	return confirm(`CẢNH BÁO!\n\nBạn sắp xóa đề bài: "${problemName}".\nĐiều này sẽ xóa toàn bộ bài nộp liên quan đến đề bài này!\n\nBạn có chắc chắn muốn tiếp tục?`);
 }
 </script>
 
 </body>
 <footer>
-    <div class="text-center mt-3">
-        <p>DuongNhanAC × ayor</p>
-    </div>
+	<div class="text-center mt-3">
+		<p>from <b>DuongNhanAC</b> × <b>ayor</b> with love <i class="bi bi-hearts"></i><br />
+		<a href="https://github.com/duongnotnhan/themis-onlan-judge"><i class="bi bi-github"></i> Source Code</a></p>
+	</div>
 </footer>
 </html>

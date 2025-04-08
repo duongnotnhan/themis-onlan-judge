@@ -14,20 +14,20 @@ $now = time();
 $problems = $pdo->query("SELECT * FROM problems WHERE order_id >= 1 ORDER BY order_id ASC")->fetchAll(PDO::FETCH_ASSOC);
 
 $rankings = $pdo->query("
-    SELECT u.username, COALESCE(SUM(max_score), 0) AS total_score
-    FROM users u
-    LEFT JOIN (
-        SELECT user_id, problem_id, MAX(score) AS max_score
-        FROM submissions
-        GROUP BY user_id, problem_id
-    ) s ON u.id = s.user_id
-    GROUP BY u.id
-    ORDER BY total_score DESC
+	SELECT u.username, COALESCE(SUM(max_score), 0) AS total_score
+	FROM users u
+	LEFT JOIN (
+		SELECT user_id, problem_id, MAX(score) AS max_score
+		FROM submissions
+		GROUP BY user_id, problem_id
+	) s ON u.id = s.user_id
+	GROUP BY u.id
+	ORDER BY total_score DESC
 ")->fetchAll(PDO::FETCH_ASSOC);
 if (isset($_GET['logout'])) {
-    session_destroy();
-    header("Location: index.php");
-    exit;
+	session_destroy();
+	header("Location: index.php");
+	exit;
 }
 ?>
 
@@ -36,6 +36,10 @@ if (isset($_GET['logout'])) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
 	<title>Themis OnLAN Judge</title>
 	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="assets/css/bootstrap-icons.css">
@@ -50,9 +54,9 @@ if (isset($_GET['logout'])) {
 	<script src="assets/js/main.js"></script>
 </head>
 <body class="bg-dark text-light">
-	    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
 		<div class="container">
-			<a class="navbar-brand" href="index.php">OnLAN Judge</a>
+			<a class="navbar-brand" href="index.php">Themis OnLAN Judge</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -109,42 +113,42 @@ if (isset($_GET['logout'])) {
 			</div>
 		</div>
 	</nav>
-    <div class="container my-4 text-center">
-        <h3><?= htmlspecialchars($contest['title']) ?></h3>
-        <p>
-            <strong>Thời gian bắt đầu:</strong> <?= date("H:i:s d/m/Y", $startTime) ?><br>
-            <strong>Thời gian kết thúc:</strong> <?= date("H:i:s d/m/Y", $endTime) ?>
-        </p>
+	<div class="container my-4 text-center">
+		<h3><?= htmlspecialchars($contest['title']) ?></h3>
+		<p>
+			<strong>Thời gian bắt đầu:</strong> <?= date("H:i:s d/m/Y", $startTime) ?><br>
+			<strong>Thời gian kết thúc:</strong> <?= date("H:i:s d/m/Y", $endTime) ?>
+		</p>
 		<h4 id="countdown" class="text-warning" data-start-time="<?= $startTime ?>" data-end-time="<?= $endTime ?>"></h4>
-    </div>
+	</div>
 
-    <div class="container">
-        <div class="row">
-            <?php if ($now >= $startTime && $now < $endTime): ?>
-                <div class="col-md-6">
-                    <h4 class="text-center"><i class="bi bi-list-ul"></i> Danh Sách Đề Bài</h4>
-                    <table class="table table-bordered table-dark table-striped table-hover">
-                        <thead class="table-light text-dark text-center">
-                            <tr>
+	<div class="container">
+		<div class="row">
+			<?php if ($now >= $startTime && $now < $endTime): ?>
+				<div class="col-md-6">
+					<h4 class="text-center"><i class="bi bi-list-ul"></i> Danh Sách Đề Bài</h4>
+					<table class="table table-bordered table-dark table-striped table-hover">
+						<thead class="table-light text-dark text-center">
+							<tr>
 								<th style="width: 20%;">Tên bài</th>
 								<th style="width: 5%;">Điểm</th>
 								<th style="min-width: 20%;">Time-limit</th>
 								<th style="min-width: 20%;">Memory-limit</th>
 								<th style="width: auto;"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($problems as $problem): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($problem['name']) ?></td>
-                                <td class="text-center"><?= htmlspecialchars($problem['total_score']) ?></td>
-                                <td class="text-center"><?= htmlspecialchars($problem['time_limit']) ?>s</td>
-                                <td class="text-center"><?= htmlspecialchars($problem['memory_limit']) ?>MiB</td>
-                                <td class="text-center">
-                                    <button class="btn btn-info btn-sm" onclick="viewProblem('<?= htmlspecialchars($problem['name']) ?>')"><i class="bi bi-eye"></i> Xem</button>
-                                    <?php if (isset($_SESSION['user_id'])): ?>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach ($problems as $problem): ?>
+							<tr>
+								<td><?= htmlspecialchars($problem['name']) ?></td>
+								<td class="text-center"><?= htmlspecialchars($problem['total_score']) ?></td>
+								<td class="text-center"><?= htmlspecialchars($problem['time_limit']) ?>s</td>
+								<td class="text-center"><?= htmlspecialchars($problem['memory_limit']) ?>MiB</td>
+								<td class="text-center">
+									<button class="btn btn-info btn-sm" onclick="viewProblem('<?= htmlspecialchars($problem['name']) ?>')"><i class="bi bi-eye"></i> Xem</button>
+									<?php if (isset($_SESSION['user_id'])): ?>
 										<button class="btn btn-secondary btn-sm viewHistory" data-problem="<?php echo $problem['name']; ?>"><i class="bi bi-clock-history"></i> Lịch Sử</button>
-                                    <?php endif; ?>
+									<?php endif; ?>
 
 									<div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
 										<div class="modal-dialog modal-lg">
@@ -171,46 +175,46 @@ if (isset($_GET['logout'])) {
 											</div>
 										</div>
 									</div>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php else: ?>
-                <h4 class="text-center text-danger"><i class="bi bi-hourglass-split"></i> Kỳ thi chưa bắt đầu hoặc đã kết thúc!</h4>
-            <?php endif; ?>
+								</td>
+							</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			<?php else: ?>
+				<h4 class="text-center text-danger"><i class="bi bi-hourglass-split"></i> Kỳ thi chưa bắt đầu hoặc đã kết thúc!</h4>
+			<?php endif; ?>
 
-            <div class="col-md-6">
-                <h4 class="text-center"><i class="bi bi-bar-chart"></i> Bảng Xếp Hạng</h4>
+			<div class="col-md-6">
+				<h4 class="text-center"><i class="bi bi-bar-chart"></i> Bảng Xếp Hạng</h4>
 				<div class="table-responsive">
 					<table class="table table-dark table-bordered table-hover rounded-3 shadow-lg" id="rankingTable">
-                    <thead class="table-light text-dark text-center">
-                        <tr>
+					<thead class="table-light text-dark text-center">
+						<tr>
 							<th style="width: 10%;">#</th>
-                            <th>Thí Sinh</th>
+							<th>Thí Sinh</th>
 							<th style="min-width: 30%;">Tổng Điểm</th>
-                        </tr>
-                    </thead>
+						</tr>
+					</thead>
 						<tbody>
-                    </tbody>
-                </table>
+					</tbody>
+				</table>
 				</div>
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 
 	<div class="modal fade" id="problemModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content bg-dark text-light">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content bg-dark text-light">
 			<div class="modal-header border-secondary">
 				<h5 class="modal-title" id="problemTitle"></h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
 				<div class="d-flex justify-content-center text-center gap-4" style="margin-bottom:15px;">
 					<div><strong>Điểm tổng:</strong> <span id="problemScore"></span></div>
-					<div><strong>Thời gian:</strong> <span id="problemTime"></span> giây</div>
+					<div><strong>Thời gian:</strong> <span id="problemTime"></span> s</div>
 					<div><strong>Bộ nhớ:</strong> <span id="problemMemory"></span> MiB</div>
 					<div><strong>Giới hạn lần nộp:</strong> <span id="submissionsLimit"></span></div>
 				</div>
@@ -237,24 +241,24 @@ if (isset($_GET['logout'])) {
 						<label class="form-label">Chọn phương thức nộp:</label>
 						<div class="form-check">
 							<input class="form-check-input" type="radio" name="submit_type" id="uploadOption" value="file" checked>
-							<label class="form-check-label" for="uploadOption">Tải file lên</label>
+							<label class="form-check-label" for="uploadOption">Tải tệp tin lên</label>
 						</div>
 					</div>
 
 					<div id="uploadSection">
-						<label for="codeFile" class="form-label">Chọn file:</label>
+						<label for="codeFile" class="form-label">Chọn tệp tin:</label>
 						<input type="file" class="form-control" name="code_file" id="codeFile" required>
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer border-secondary">
 				<button type="submit" class="btn btn-primary" form="submitForm">Gửi Bài</button>
-                </div>
-            </div>
-        </div>
-    </div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <script>
+	<script>
 		// $("input[name='submit_type']").on("change", function () {
 		// 	if ($(this).val() === "file") {
 		// 		$("#uploadSection").show();
@@ -270,14 +274,14 @@ if (isset($_GET['logout'])) {
 
 			let formData = new FormData(this);
 
-            $.ajax({
+			$.ajax({
 				url: "submit.php",
-                type: "POST",
+				type: "POST",
 				data: formData,
 				contentType: false,
 				processData: false,
 				dataType: "json",
-                success: function (response) {
+				success: function (response) {
 					if (response.error) {
 						alert(response.error);
 					} else {
@@ -288,16 +292,17 @@ if (isset($_GET['logout'])) {
 				},
 				error: function () {
 					alert("Lỗi khi gửi bài nộp!");
-                }
-            });
-        });
+				}
+			});
+		});
 		fetchRanking();
-    </script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
+	</script>
+	<script src="assets/js/bootstrap.bundle.min.js"></script>
 </body>
 <footer>
-    <div class="text-center mt-3">
-        <p>DuongNhanAC × ayor</p>
-    </div>
+	<div class="text-center mt-3">
+		<p>from <b>DuongNhanAC</b> × <b>ayor</b> with love <i class="bi bi-hearts"></i><br />
+		<a href="https://github.com/duongnotnhan/themis-onlan-judge"><i class="bi bi-github"></i> Source Code</a></p>
+	</div>
 </footer>
 </html>
