@@ -85,10 +85,10 @@ Hiển thị danh sách đề bài nằm trong hệ thống trang web.
     ![image](https://github.com/user-attachments/assets/24b63683-db44-4020-ae98-2bf1f61c96b7)
 
    **Lưu Ý:** Các thông tin như Tên Đề Bài, Tổng Điểm, TL, ML cần phải khớp với máy chấm Themis.
-3. Sửa Đề Bài
+2. Sửa Đề Bài
 
     Sửa lại thông tin đề bài tương ứng.
-4. Xóa Đề Bài
+3. Xóa Đề Bài
 
     Xóa đề bài khỏi hệ thống kỳ thi.
 
