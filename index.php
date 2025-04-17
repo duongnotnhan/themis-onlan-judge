@@ -54,9 +54,9 @@ if (isset($_GET['logout'])) {
 	<script src="assets/js/main.js"></script>
 </head>
 <body class="bg-dark text-light">
-		<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
 		<div class="container">
-			<a class="navbar-brand" href="index.php">Themis OnLAN Judge</a>
+			<a class="navbar-brand" href="#">Themis OnLAN Judge <span id="ping-result" class="fw-bold"></span></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -128,26 +128,28 @@ if (isset($_GET['logout'])) {
 				<div class="col-md-6">
 					<h4 class="text-center"><i class="bi bi-list-ul"></i> Danh Sách Đề Bài</h4>
 					<table class="table table-bordered table-dark table-striped table-hover">
-						<thead class="table-light text-dark text-center">
+						<thead class="table-light text-dark text-center align-middle">
 							<tr>
-								<th style="width: 20%;">Tên bài</th>
+								<th style="width: 10%;">ID</th>
+								<th style="min-width: 25%;">Tên Đề Bài</th>
 								<th style="width: 5%;">Điểm</th>
-								<th style="min-width: 20%;">Time-limit</th>
-								<th style="min-width: 20%;">Memory-limit</th>
-								<th style="width: auto;"></th>
+								<th style="min-width: 15%;">Thời Gian</th>
+								<th style="min-width: 15%;">Bộ Nhớ</th>
+								<th style="min-width: 10%;"></th>
 							</tr>
 						</thead>
 						<tbody>
 							<?php foreach ($problems as $problem): ?>
-							<tr>
+							<tr class="align-middle">
 								<td><?= htmlspecialchars($problem['name']) ?></td>
+								<td><?= htmlspecialchars($problem['full_name']) ?></td>
 								<td class="text-center"><?= htmlspecialchars($problem['total_score']) ?></td>
 								<td class="text-center"><?= htmlspecialchars($problem['time_limit']) ?>s</td>
 								<td class="text-center"><?= htmlspecialchars($problem['memory_limit']) ?>MiB</td>
 								<td class="text-center">
-									<button class="btn btn-info btn-sm" onclick="viewProblem('<?= htmlspecialchars($problem['name']) ?>')"><i class="bi bi-eye"></i> Xem</button>
+									<button class="btn btn-info btn-sm" onclick="viewProblem('<?= htmlspecialchars($problem['name']) ?>')"><i class="bi bi-eye"></i></button>
 									<?php if (isset($_SESSION['user_id'])): ?>
-										<button class="btn btn-secondary btn-sm viewHistory" data-problem="<?php echo $problem['name']; ?>"><i class="bi bi-clock-history"></i> Lịch Sử</button>
+										<button class="btn btn-secondary btn-sm viewHistory" data-problem="<?php echo $problem['name']; ?>"><i class="bi bi-clock-history"></i></button>
 									<?php endif; ?>
 
 									<div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
@@ -208,7 +210,7 @@ if (isset($_GET['logout'])) {
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content bg-dark text-light">
 			<div class="modal-header border-secondary">
-				<h5 class="modal-title" id="problemTitle"></h5>
+				<h5 class="modal-title" id="problemName"></h5> <i class="bi bi-dash-lg"></i> <h5 class="modal-title" id="problemFullName"></h5>
 					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
@@ -243,11 +245,27 @@ if (isset($_GET['logout'])) {
 							<input class="form-check-input" type="radio" name="submit_type" id="uploadOption" value="file" checked>
 							<label class="form-check-label" for="uploadOption">Tải tệp tin lên</label>
 						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="submit_type" id="editorOption" value="editor">
+							<label class="form-check-label" for="editorOption">Soạn thảo trực tiếp</label>
+						</div>
 					</div>
 
 					<div id="uploadSection">
 						<label for="codeFile" class="form-label">Chọn tệp tin:</label>
 						<input type="file" class="form-control" name="code_file" id="codeFile" required>
+					</div>
+
+					<div id="editorSection" style="display: none;">
+						<label for="codeEditor" class="form-label">Soạn thảo mã nguồn:</label>
+						<textarea class="form-control language-markdown" name="code_editor" id="codeEditor" rows="14"></textarea>
+						<label for="languageSelect" class="form-label mt-2">Chọn ngôn ngữ:</label>
+						<select class="form-select" name="language" id="languageSelect">
+							<option value="C">C</option>
+							<option value="CPP">C++</option>
+							<option value="PY">Python</option>
+							<option value="PAS">Pascal</option>
+						</select>
 					</div>
 				</form>
 			</div>
@@ -259,15 +277,19 @@ if (isset($_GET['logout'])) {
 	</div>
 
 	<script>
-		// $("input[name='submit_type']").on("change", function () {
-		// 	if ($(this).val() === "file") {
-		// 		$("#uploadSection").show();
-		// 		$("#editorSection").hide();
-		// 	} else {
-		// 		$("#uploadSection").hide();
-		// 		$("#editorSection").show();
-		// 	}
-		// });
+		$("input[name='submit_type']").on("change", function () {
+			if ($(this).val() === "file") {
+				$("#uploadSection").show();
+				$("#editorSection").hide();
+				$("#codeFile").prop("required", true);
+				$("#codeEditor").prop("required", false);
+			} else {
+				$("#uploadSection").hide();
+				$("#editorSection").show();
+				$("#codeFile").prop("required", false);
+				$("#codeEditor").prop("required", true);
+			}
+		});
 
 		$("#submitForm").on("submit", function (e) {
 			e.preventDefault();

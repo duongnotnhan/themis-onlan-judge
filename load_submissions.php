@@ -29,22 +29,17 @@ if ($_SESSION['role'] === 'admin') {
 $submissions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 foreach ($submissions as $submission) {
-	$statusClass = match ($submission['status']) {
-		'AC'  => 'bg-success text-white',
-		'WA'  => 'bg-danger text-white',
-		'TLE' => 'bg-secondary text-white',
-		'MLE' => 'bg-warning text-dark',
-		'ER/IR' => 'bg-warning text-dark',
-		default => 'bg-light text-dark'
-	};
-
 	$submittedTime = date("H:i d/m/Y", strtotime($submission['submitted_at']));
-	$scoreDisplay = "{$submission['score']}/{$submission['total_score']}";
+	if ($submission['status'] === 'PENDING' || $submission['status'] === 'NOT SUBMITTED') {
+		$scoreDisplay = "<div class=\"spinning\"><i class=\"bi bi-arrow-clockwise\"></i></div>";
+	} else {
+		$scoreDisplay = "{$submission['score']}/{$submission['total_score']}";
+	}
 
 	echo "
 		<tr class='text-center align-middle'>
 			<td>
-				<span class='badge $statusClass p-2'>{$submission['status']}</span><br>
+				<span class='badge {$submission['status']} p-2'>{$submission['status']}</span><br>
 				<small class='badge'>{$submission['language']}</small>
 			</td>
 			<td><strong>$scoreDisplay</strong></td>

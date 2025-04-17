@@ -26,7 +26,7 @@ if (isset($_GET['logout'])) {
 	exit();
 }
 
-$stmt = $pdo->query("SELECT id, name, total_score, time_limit, memory_limit FROM problems");
+$stmt = $pdo->query("SELECT id, name, full_name, total_score, time_limit, memory_limit FROM problems");
 $problems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -115,11 +115,13 @@ $problems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	<table class="table table-dark table-striped table-hover mt-3 table-bordered">
 		<thead class="table-light text-dark text-center">
 			<tr>
-			<th style="width: 20%;">Tên bài</th>
-			<th style="width: 5%;">Điểm</th>
-			<th style="width: 20%;">Time-limit (s)</th>
-			<th style="width: 20%;">Memory-limit (MiB)</th>
+			<th style="width: 10%;">Tên (Themis)</th>
+			<th style="min-width: 20%;">Tên Đề Bài</th>
+			<th style="width: 5%;">Điểm Tổng</th>
+			<th style="width: 12%;">Thời Gian (s)</th>
+			<th style="width: 12%;">Bộ Nhớ (MiB)</th>
 			<th>Sửa Đề Bài</th>
+			<th>Cài Đặt</th>
 			<th>Xóa Bài</th>
 			</tr>
 		</thead>
@@ -127,12 +129,20 @@ $problems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			<?php foreach ($problems as $problem): ?>
 				<tr>
 					<td><?php echo htmlspecialchars($problem['name']); ?></td>
+					<td><?php echo htmlspecialchars($problem['full_name']); ?></td>
 					<td class="text-center"><?php echo htmlspecialchars($problem['total_score']); ?></td>
 					<td class="text-center"><?php echo htmlspecialchars($problem['time_limit']); ?></td>
 					<td class="text-center"><?php echo htmlspecialchars($problem['memory_limit']); ?></td>
 					<td class="text-center">
 						<?php if ($_SESSION['role'] === 'admin'): ?>
 							<a href="edit_problem.php?id=<?php echo $problem['id']; ?>" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Sửa</a>
+						<?php else: ?>
+							<span class="text-muted"><small>Đừng Nhìn Tôi</small></span>
+						<?php endif; ?>
+					</td>
+					<td class="text-center">
+						<?php if ($_SESSION['role'] === 'admin'): ?>
+							<a href="testcase_settings.php?name=<?php echo $problem['name']; ?>" class="btn btn-info"><i class="bi bi-gear-wide-connected"></i> Testcase</a>
 						<?php else: ?>
 							<span class="text-muted"><small>Đừng Nhìn Tôi</small></span>
 						<?php endif; ?>

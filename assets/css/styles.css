@@ -1,6 +1,98 @@
 html {
     height: 100%;
 }
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+.spinning {
+    animation: spin 1s linear infinite;
+}
+.rainbow-bg{
+    animation: rainbow-bg 1s linear;
+    animation-iteration-count: infinite;
+}
+.rainbow{
+    animation: rainbow 1s linear;
+    animation-iteration-count: infinite;
+}
+@keyframes rainbow-bg{
+    100%,0%{
+        background-color: rgb(255,0,0);
+    }
+    8%{
+        background-color: rgb(255,127,0);
+    }
+    16%{
+        background-color: rgb(255,255,0);
+    }
+    25%{
+        background-color: rgb(127,255,0);
+    }
+    33%{
+        background-color: rgb(0,255,0);
+    }
+    41%{
+        background-color: rgb(0,255,127);
+    }
+    50%{
+        background-color: rgb(0,255,255);
+    }
+    58%{
+        background-color: rgb(0,127,255);
+    }
+    66%{
+        background-color: rgb(0,0,255);
+    }
+    75%{
+        background-color: rgb(127,0,255);
+    }
+    83%{
+        background-color: rgb(255,0,255);
+    }
+    91%{
+        background-color: rgb(255,0,127);
+    }
+}
+@keyframes rainbow{
+    100%,0%{
+        color: rgb(255,0,0);
+    }
+    8%{
+        color: rgb(255,127,0);
+    }
+    16%{
+        color: rgb(255,255,0);
+    }
+    25%{
+        color: rgb(127,255,0);
+    }
+    33%{
+        color: rgb(0,255,0);
+    }
+    41%{
+        color: rgb(0,255,127);
+    }
+    50%{
+        color: rgb(0,255,255);
+    }
+    58%{
+        color: rgb(0,127,255);
+    }
+    66%{
+        color: rgb(0,0,255);
+    }
+    75%{
+        color: rgb(127,0,255);
+    }
+    83%{
+        color: rgb(255,0,255);
+    }
+    91%{
+        color: rgb(255,0,127);
+    }
+}
 .modal-body table {
     width: 100%;
     table-layout: fixed;
@@ -84,6 +176,25 @@ footer {
     color: white;
     text-align: center;
 }
+.AC {
+    background-color: #53f23f;
+    color: green;
+}
+.TLE, .CE {
+    background-color: #CCC;
+    color: black;
+}
+.ER\/IR, .MLE {
+    background-color: #fcc54f;
+    color: black;
+}
+.WA {
+    background-color: #CCC;
+    color: #ef1b53;
+}
+.PENDING, .NOT\ SUBMITTED {
+    animation: rainbow-bg 1s linear infinite;
+}
 .dropdown-menu {
     background-color: #343a40;
     color: white;
@@ -95,4 +206,8 @@ footer {
 }
 .dropdown-menu a:hover {
     background-color: #495057;
+}
+.language-markdown {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 14px;
 }

@@ -23,7 +23,7 @@ $problem_name = mb_strtolower($problem_name, 'UTF-8');
 
 $contest = $pdo->query("SELECT submission_path, start_time, end_time FROM contest_settings WHERE id = 1")->fetch(PDO::FETCH_ASSOC);
 if (!$contest) {
-	echo json_encode(["error" => "Không tìm thấy thông tin cuộc thi"]);
+	echo json_encode(["error" => "Không tìm thấy thông tin kỳ thi!"]);
 	exit;
 }
 
@@ -92,22 +92,24 @@ if ($submit_type === "file") {
 
 	$language = $supported_languages[$file_ext];
 	$backup_code = file_get_contents($_FILES["code_file"]["tmp_name"]);
+} elseif ($submit_type === "editor") {
+	if (empty($_POST["code_editor"])) {
+		echo json_encode(["error" => "Vui lòng nhập mã nguồn để nộp"]);
+		exit;
+	}
+
+	$backup_code = $_POST["code_editor"];
+	$language = $_POST["language"];
 }
-
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM submissions WHERE user_id = ? AND problem_id = ? AND status = 'PENDING'");
-$stmt->execute([$user_id, $problem_id]);
-$pending_count = $stmt->fetchColumn();
-
-$status = ($pending_count == 0) ? "PENDING" : "NOT SUBMITTED";
 
 $stmt = $pdo->prepare("INSERT INTO submissions (user_id, problem_id, submitted_at, status, backup_code, language) 
 					   VALUES (?, ?, ?, ?, ?, ?)");
-$stmt->execute([$user_id, $problem_id, $current_time_sql, $status, $backup_code, $language]);
+$stmt->execute([$user_id, $problem_id, $current_time_sql, "PENDING", $backup_code, $language]);
 
 $message = "Nộp bài thành công!";
 if ($submissions_limit != -1) {
 	$message .= " Bạn còn $remaining_submissions lần nộp bài cho đề bài này.";
 }
 
-echo json_encode(["success" => $message, "status" => $status]);
+echo json_encode(["success" => $message, "status" => "PENDING"]);
 exit;

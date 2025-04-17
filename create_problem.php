@@ -11,22 +11,25 @@ $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$problem_name = $_POST['name'];
+	$problem_fullname = $_POST['full_name'];
 	$time_limit = $_POST['time_limit'];
 	$memory_limit = $_POST['memory_limit'];
 	$total_score = $_POST['total_score'];
 	$description = $_POST['description'];
+	$stdin = isset($_POST['use_stdin']) ? 1 : 0;
+	$stdout = isset($_POST['use_stdout']) ? 1 : 0;
 	
 	$stmt = $pdo->prepare("SELECT COUNT(*) FROM problems WHERE name = ?");
 	$stmt->execute([$problem_name]);
 	$count = $stmt->fetchColumn();
 	
 	if ($count > 0) {
-		$error = "Đề bài đã tồn tại! Vui lòng chọn tên khác.";
+		$error = "Tên đề bài (theo Themis) đã tồn tại! Vui lòng sửa lại dữ liệu!";
 	} else {
-		$stmt = $pdo->prepare("INSERT INTO problems (name, time_limit, memory_limit, total_score, description) VALUES (?, ?, ?, ?, ?)");
-		$stmt->execute([$problem_name, $time_limit, $memory_limit, $total_score, $description]);
+		$stmt = $pdo->prepare("INSERT INTO problems (name, full_name, time_limit, memory_limit, total_score, description, stdin, stdout) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+		$stmt->execute([$problem_name, $problem_fullname, $time_limit, $memory_limit, $total_score, $description, $stdin, $stdout]);
 		
-		header("Location: admin_dashboard.php");
+		header("Location: problems.php");
 		exit();
 	}
 }
@@ -125,28 +128,37 @@ if (isset($_GET['logout'])) {
 	<?php endif; ?>
 	<form method="POST">
 		<div class="mb-3">
-			<label class="form-label">Tên Đề Bài</label>
+			<label class="form-label">Tên Đề Bài (Themis)</label>
 			<input type="text" class="form-control" name="name" required>
+		</div>
+		<div class="mb-3">
+			<label class="form-label">Tên Đề Bài (Đầy Đủ)</label>
+			<input type="text" class="form-control" name="full_name" required>
 		</div>
 		<div class="mb-3">
 			<label class="form-label">Tổng Điểm</label>
 			<input type="number" class="form-control" name="total_score" step="any" required>
 		</div>
+		<div class="mb-3 form-check">
+			<input type="checkbox" class="form-check-input" id="use_stdin" name="use_stdin">
+			<label class="form-check-label" for="use_stdin">Sử dụng đầu vào chuẩn (stdin)?</label>
+		</div>
+		<div class="mb-3 form-check">
+			<input type="checkbox" class="form-check-input" id="use_stdout" name="use_stdout">
+			<label class="form-check-label" for="use_stdout">Sử dụng đầu ra chuẩn (stdout)?</label>
+		</div>
 		<div class="mb-3">
-			<label class="form-label">Time Limit (s)</label>
+			<label class="form-label">Giới Hạn Thời Gian (s)</label>
 			<input type="number" class="form-control" name="time_limit" value="<?php echo 1.0; ?>" step="any" required>
 		</div>
 		<div class="mb-3">
-			<label class="form-label">Memory Limit (MiB)</label>
+			<label class="form-label">Giới Hạn Bộ Nhớ (MiB)</label>
 			<input type="number" class="form-control" name="memory_limit" value="<?php echo 1024; ?>" required>
 		</div>
-
 		<div class="mb-3">
 			<label class="form-label">Mô Tả</label>
 			<textarea id="markdown-input" class="form-control language-markdown" name="description" rows="6" required></textarea>
-			<pre class="bg-dark text-light p-3 rounded"><code id="editor-preview" class="language-markdown"></code></pre>
 		</div>
-
 		<h4>Xem Trước Mô Tả</h4>
 		<div id="preview" class="bg-light text-dark p-3 rounded"></div>
 		<hr>
@@ -179,7 +191,7 @@ if (isset($_GET['logout'])) {
 	document.getElementById('markdown-input').addEventListener('input', function() {
 		let inputText = this.value;
 
-		document.getElementById('editor-preview').textContent = inputText;
+		document.getElementById('markdown-input').textContent = inputText;
 
 		renderMarkdown();
 		Prism.highlightAll();

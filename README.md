@@ -4,9 +4,9 @@ Hệ Thống Kỳ Thi Themis OnLAN
 
 ## Thông Tin
 
-- Hệ thống hỗ trợ host: [UniServerZ](https://www.uniformserver.com/).
-- Hệ điều hành: Windows.
-- Cơ sở dữ liệu: MariaDB.
+- Hệ thống hỗ trợ host: [UniServerZ](https://www.uniformserver.com/) (phiên bản 15.x.x+).
+- Hệ điều hành: Windows 10 trở lên.
+- Cơ sở dữ liệu: [MariaDB](https://mariadb.org/download/?t=mariadb&o=true&p=mariadb&r=11.6.2&os=windows&cpu=x86_64&pkg=msi&mirror=archive) (phiên bản 11.6 trở lên).
 
 ## Cài Đặt
 
@@ -16,7 +16,7 @@ Sau khi tải về, giải nén vào thư mục `www` trong thư mục cài đ�
 
 ### Cài Đặt Cơ Sở Dữ Liệu
 
-Tải về và Nhập cài đặt vào SQL từ file [online-judge-setup-database.sql](https://github.com/duongnotnhan/themis-onlan-judge/blob/main/online-judge-setup-database.sql) có sẵn trong thư mục.
+Tải về và Nhập cài đặt vào hệ CSDL MariaDB từ file [online-judge-setup-database.sql](https://github.com/duongnotnhan/themis-onlan-judge/blob/main/online-judge-setup-database.sql) có sẵn trong thư mục.
 
 ### Cấu Hình
 
@@ -26,6 +26,7 @@ Tải về và Nhập cài đặt vào SQL từ file [online-judge-setup-databas
 
    ```env
    DB_HOST=127.0.0.1
+   DB_PORT=3306
    DB_NAME=online_judge
    DB_USER=root
    DB_PASS=root
@@ -36,12 +37,13 @@ Tải về và Nhập cài đặt vào SQL từ file [online-judge-setup-databas
    - Đăng nhập tài khoản `admin` với mật khẩu: `admin1234`.
    - Tại **Bảng Điều Khiển**, sửa thông tin thư mục bài nộp theo thông tin cài trong phần mềm _Themis_:
 
-     ![image](https://github.com/user-attachments/assets/d0eb67d8-0d00-48aa-9823-1b72a12f34fb)
+    ![image](https://github.com/user-attachments/assets/d0eb67d8-0d00-48aa-9823-1b72a12f34fb)
+   - Dựa trên thư mục lưu testcase (hay còn gọi là thư mục đề bài trên phần mềm Themis), sửa trường "Thư mục testcase (theo Themis)" trên trang web.
    - Lưu thay đổi.
 
 3. Cài đặt hệ thống xử lý hàng đợi
    - Cài đặt PHP có sẵn trong UniserverZ vào PATH hoặc sử dụng trực tiếp bằng cách sao chép đường dẫn.
-   - Khởi chạy tệp `judge_worker.php`:
+   - Khởi chạy tệp `judge_worker.php` theo mẫu như trong hình:
 
    ![image](https://i.postimg.cc/Hsb7817F/Screenshot-2025-04-01-201644.png)
 
@@ -56,9 +58,9 @@ Thế là xong bước cài đặt ban đầu!
 
 1. Quản Lý Kỳ Thi
 
-   Quản Trị Viên có thể thay đổi thông tin kỳ thi bao gồm Tên kỳ thi, Thời gian diễn ra kỳ thi và Thư mục bài nộp kỳ thi:
+   Quản Trị Viên có thể thay đổi thông tin kỳ thi bao gồm Tên kỳ thi, Thời gian diễn ra kỳ thi, Thư mục bài nộp kỳ thi và Thư mục lưu testcase của Themis:
 
-   ![image](https://github.com/user-attachments/assets/e80ad8cf-3982-4dd1-bee7-ada575dba90d)
+   ![image](https://i.postimg.cc/L6VGFfPt/screenshot-4.png)
 2. Danh Sách Đề Bài
 
    Quản trị viên có thể chọn các đề bài được sử dụng trong kỳ thi từ `Danh Sách Đề Bài`. Có thể tùy chọn thứ tự của đề bài, số lần nộp giới hạn, ....
@@ -80,17 +82,20 @@ Hiển thị danh sách đề bài nằm trong hệ thống trang web.
 
 1. Tạo Đề Bài
 
-    Quản Trị Viên có thể tạo đề bài mới cho kỳ thi:
+   Quản Trị Viên có thể tạo đề bài mới cho kỳ thi:
 
-    ![image](https://github.com/user-attachments/assets/24b63683-db44-4020-ae98-2bf1f61c96b7)
+   ![image](https://i.postimg.cc/v8S7CZqP/screenshot-6.png)
 
-   **Lưu Ý:** Các thông tin như Tên Đề Bài, Tổng Điểm, TL, ML cần phải khớp với máy chấm Themis.
+   **Lưu Ý:** Các thông tin như Tên Đề Bài (Themis), Giới hạn thời gian, Giới hạn bộ nhớ, ... cần phải khớp với máy chấm Themis. Có thể sử dụng tính năng chỉnh sửa cài đặt testcase tại trang danh sách đề bài để đồng bộ. Điểm trên trang web được phép khác với tổng điểm của Themis do điểm trên hệ thống được tính theo tỉ lệ điểm từ tệp cài đặt.
 2. Sửa Đề Bài
 
-    Sửa lại thông tin đề bài tương ứng.
-3. Xóa Đề Bài
+   Sửa lại thông tin đề bài tương ứng.
+3. Sửa Cài Đặt Testcase
 
-    Xóa đề bài khỏi hệ thống kỳ thi.
+   ![image](https://i.postimg.cc/dtzZvkK0/screenshot-5.png)
+4. Xóa Đề Bài
+
+   Xóa đề bài khỏi hệ thống kỳ thi.
 
 ### Lịch Sử Nộp Bài
 
@@ -108,18 +113,21 @@ Có thể xem trạng thái, danh sách bài nộp của tất cả thí sinh tr
 
 Tất cả Người Dùng đều có thể tham gia kỳ thi, đọc đề bài cũng như nộp bài lên hệ thống.
 
-![image](https://i.postimg.cc/sjpMpnZd/Screenshot-2025-04-03-134027.png)
+![image](https://i.postimg.cc/ydRBBdhF/Screenshot-2025-04-17-204834.png)
 
 ## Vấn Đề & Bổ Sung Sắp Tới
 
 ### Vấn Đề Đã Biết
 
-_Hiện đang trong quá trình thử nghiệm..._
+1. Người dùng chưa thể tự cấp lại mật khẩu trong trường hợp quên (cần trợ giúp giải pháp).
 
 ### Vấn Đề Chưa Biết
 
-_Hiện đang trong quá trình thử nghiệm..._
+- [Báo cáo tại đây.](https://github.com/duongnotnhan/themis-onlan-judge/issues)
 
 ### Bổ Sung Sắp Tới
 
-1. Chức năng tự cấp lại mật khẩu.
+1. Sửa lỗi giao diện.
+
+----
+**Nhóm tác giả:** DuongNhanAC, ayor.

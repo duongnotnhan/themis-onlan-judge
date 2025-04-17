@@ -10,7 +10,7 @@ if (!isset($_GET['name'])) {
 
 $problem_name = $_GET['name'];
 
-$stmt = $pdo->prepare("SELECT name, description, total_score, time_limit, memory_limit, submissions_limit FROM problems WHERE name = :name");
+$stmt = $pdo->prepare("SELECT name, full_name, description, total_score, time_limit, memory_limit, submissions_limit FROM problems WHERE name = :name");
 $stmt->execute(['name' => $problem_name]);
 $problem = $stmt->fetch(PDO::FETCH_ASSOC);
 

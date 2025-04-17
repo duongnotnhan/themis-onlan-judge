@@ -69,9 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contest_settings'])) 
 	$start_time = $_POST['start_time'];
 	$end_time = $_POST['end_time'];
 	$submission_path = $_POST['submission_path'];
+	$testcase_path = $_POST['testcase_path'];
 
-	$stmt = $pdo->prepare("UPDATE contest_settings SET title = ?, start_time = ?, end_time = ?, submission_path = ?");
-	$stmt->execute([$title, $start_time, $end_time, $submission_path]);
+	$stmt = $pdo->prepare("UPDATE contest_settings SET title = ?, start_time = ?, end_time = ?, submission_path = ?, testcase_path = ?");
+	$stmt->execute([$title, $start_time, $end_time, $submission_path, $testcase_path]);
 
 	header("Location: admin_dashboard.php");
 	exit();
@@ -199,6 +200,9 @@ $problems = $stmt->fetchAll();
 			
 			<label class="form-label">Thư mục bài nộp</label>
 			<input type="text" name="submission_path" value="<?= htmlspecialchars($contest['submission_path']) ?>" class="form-control mb-3">
+
+			<label class="form-label">Thư mục testcase (theo Themis)</label>
+			<input type="text" name="testcase_path" value="<?= htmlspecialchars($contest['testcase_path']) ?>" class="form-control mb-3">
 			
 			<button type="submit" name="contest_settings" class="btn btn-primary">Lưu thay đổi</button>
 		</form>
@@ -229,7 +233,7 @@ $problems = $stmt->fetchAll();
 						if ($problem['order_id'] != -1): 
 							$problemId = (int) $problem['id']; 
 							$orderId = (int) $problem['order_id'];
-							$problemName = htmlspecialchars($problem['name']);
+							$problemName = $problem['name'] . ' - ' . htmlspecialchars($problem['full_name']);
 							$submissionLimit = (int) $problem['submissions_limit'];
 					?>
 						<tr data-id="<?= $problemId ?>">

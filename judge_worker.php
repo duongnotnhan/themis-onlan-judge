@@ -7,6 +7,8 @@ $contest = $pdo->query("SELECT submission_path FROM contest_settings WHERE id = 
 if (!$contest) {
 	die("Không tìm thấy thông tin cuộc thi!\n");
 }
+$stmt = $pdo->query("SELECT testcase_path FROM contest_settings LIMIT 1");
+$contest_settings = $stmt->fetch();
 
 $submission_path = rtrim($contest['submission_path'], '/') . '/';
 $logs_path = $submission_path . "Logs/";
@@ -91,19 +93,57 @@ while (true) {
 		continue;
 	}
 
+	$testcase_path = rtrim($contest_settings['testcase_path'], '/') . "/$problem_name/";
+	$settings_path = $testcase_path . "Settings.cfg";
+	if (!file_exists($settings_path)) {
+		echo "Không tìm thấy tệp Settings.cfg!\n";
+		continue;
+	}
+
+	$settings_content = file_get_contents($settings_path);
+	$decompressed_settings = gzuncompress($settings_content);
+	$settings_xml = simplexml_load_string($decompressed_settings);
+
+	if (!$settings_xml) {
+		echo "Không thể đọc tệp Settings.cfg!\n";
+		continue;
+	}
+
+	$score_per_test = floatval($settings_xml['Mark']);
+	$total_score_from_settings = 0;
+	$testcase_scores = [];
+
+	foreach ($settings_xml->TestCase as $testcase) {
+		$testcase_name = (string) $testcase['Name'];
+		$testcase_mark = floatval($testcase['Mark']);
+
+		if ($testcase_mark == -1) {
+			$testcase_mark = $score_per_test;
+		}
+
+		$testcase_scores[$testcase_name] = $testcase_mark;
+		$total_score_from_settings += $testcase_mark;
+	}
+
 	$backup_logs = file_get_contents($log_file);
 	$lines = explode("\n", $backup_logs);
-	$total_score = 0;
+	$total_score_earned = 0;
 	$status = "WA";
 	$found_testcase = false;
 
-	$pattern = '/^' . preg_quote(mb_strtolower($username, 'UTF-8'), '/') . '‣' . preg_quote(mb_strtolower($problem_name, 'UTF-8'), '/') . '‣.*: ([0-9.]+)/i';
+	$pattern = '/^' . preg_quote(mb_strtolower($username, 'UTF-8'), '/') . '‣' . preg_quote(mb_strtolower($problem_name, 'UTF-8'), '/') . '‣(.*): ([0-9.]+)/i';
 
 	foreach ($lines as $line) {
 		$line_lower = mb_strtolower($line, 'UTF-8');
 
 		if (preg_match($pattern, $line_lower, $matches)) {
-			$total_score += floatval($matches[1]);
+			$testcase_name = trim($matches[1]);
+			$testcase_score = floatval($matches[2]);
+
+			if (isset($testcase_scores[$testcase_name]) && $testcase_score > 0) {
+				$total_score_earned += $testcase_scores[$testcase_name];
+			}
+
 			$found_testcase = true;
 		}
 
@@ -121,23 +161,25 @@ while (true) {
 	}
 
 	if (!$found_testcase) {
-		$total_score = 0;
-		$status = "CE";
+		$total_score_earned = 0;
+		$status = "CE/IE";
 	}
 
 	$stmt = $pdo->prepare("SELECT total_score FROM problems WHERE id = ?");
 	$stmt->execute([$problem_id]);
 	$max_score = $stmt->fetchColumn();
 
-	if ($total_score >= $max_score) {
-		$total_score = $max_score;
+	$final_score = ($total_score_earned / $total_score_from_settings) * $max_score;
+	$final_score = min($final_score, $max_score);
+
+	if ($final_score == $max_score) {
 		$status = "AC";
 	}
 
 	$stmt = $pdo->prepare("UPDATE submissions SET score = ?, status = ?, backup_logs = ? WHERE id = ?");
-	$stmt->execute([$total_score, $status, $backup_logs, $submission_id]);
+	$stmt->execute([round($final_score, 2), $status, $backup_logs, $submission_id]);
 
-	echo "Chấm xong bài nộp ID: $submission_id - Trạng thái: $status - Số điểm: $total_score\n";
+	echo "Chấm xong bài nộp ID: $submission_id - Kết quả: $status - Số điểm: $final_score\n";
 
 	unlink($log_file);
 
