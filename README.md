@@ -10,9 +10,12 @@ Hệ Thống Kỳ Thi Themis OnLAN
 
 ## Cài Đặt
 
+### Video Hướng Dẫn
+[![Xem ngay!](https://img.youtube.com/vi/PAfpn-G5Tqc/0.jpg)](https://www.youtube.com/watch?v=PAfpn-G5Tqc)
+
 ### Tải về phiên bản mới nhất tại [Releases](https://github.com/duongnotnhan/themis-onlan-judge/releases)
 
-Sau khi tải về, giải nén vào thư mục `www` trong thư mục cài đặt _UniServerZ_.
+Sau khi tải về, giải nén vào thư mục `www` trong thư mục cài đặt _UniServerZ_, nếu cài đặt bản AttachedUniserverZ thì không cần tải UniserverZ.
 
 ### Cài Đặt Cơ Sở Dữ Liệu
 
