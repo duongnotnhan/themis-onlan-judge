@@ -53,6 +53,8 @@ Tải về và Nhập cài đặt vào hệ CSDL MariaDB từ file [online-judge
 ----
 Thế là xong bước cài đặt ban đầu!
 
+(*) Bộ testcase mẫu của database mẫu có thể tải tại [đây](https://drive.google.com/drive/folders/1KsdH-ZkjJoXLcXqJvGBivBQnGWmFRwkD?usp=sharing).
+
 ## Sử Dụng
 
 (*) Định nghĩa _Người Dùng_: các người dùng có tài khoản trên hệ thống.
