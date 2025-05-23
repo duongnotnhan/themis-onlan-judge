@@ -8,4 +8,9 @@
 	Deny from all
 </Files>
 
+<Files "judge_worker.php">
+	Order Allow,Deny
+	Deny from all
+</Files>
+
 Options -Indexes
