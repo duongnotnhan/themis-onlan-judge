@@ -184,7 +184,26 @@ if (isset($_GET['logout'])) {
 					</table>
 				</div>
 			<?php else: ?>
-				<h4 class="text-center text-danger"><i class="bi bi-hourglass-split"></i> Kỳ thi chưa bắt đầu hoặc đã kết thúc!</h4>
+				<div class="col-md-6">
+					<h4 class="text-center"><i class="bi bi-list-ul"></i> Danh Sách Đề Bài</h4>
+					<table class="table table-bordered table-dark table-striped table-hover">
+						<thead class="table-light text-dark text-center align-middle">
+							<tr>
+								<th style="width: 10%;">ID</th>
+								<th style="min-width: 25%;">Tên Đề Bài</th>
+								<th style="width: 5%;">Điểm</th>
+								<th style="min-width: 15%;">Thời Gian</th>
+								<th style="min-width: 15%;">Bộ Nhớ</th>
+								<th style="min-width: 10%;"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td colspan="6" class="text-center text-muted"><h4 class="text-center text-danger"><i class="bi bi-hourglass-split"></i> Kỳ thi chưa bắt đầu hoặc đã kết thúc!</h4></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			<?php endif; ?>
 
 			<div class="col-md-6">

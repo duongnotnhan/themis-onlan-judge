@@ -14,32 +14,81 @@ if (!isset($_GET['name'])) {
 
 $problem_name = $_GET['name'];
 
+$stmt = $pdo->prepare("SELECT * FROM problems WHERE name = ?");
+$stmt->execute([$problem_name]);
+$problem_info = $stmt->fetch();
+
+$useStdIn = isset($problem_info['stdin']) ? (int)$problem_info['stdin'] : 0;
+$useStdOut = isset($problem_info['stdout']) ? (int)$problem_info['stdout'] : 0;
+$mark = isset($problem_info['total_score']) ? $problem_info['total_score'] : 100;
+$timeLimit = isset($problem_info['time_limit']) ? $problem_info['time_limit'] : 1;
+$memoryLimit = isset($problem_info['memory_limit']) ? $problem_info['memory_limit'] : 1024;
+
 $stmt = $pdo->query("SELECT testcase_path FROM contest_settings LIMIT 1");
 $contest_settings = $stmt->fetch();
 $testcase_path = rtrim($contest_settings['testcase_path'], '/') . "/$problem_name/";
 
+if (!is_dir($testcase_path)) {
+	echo "Không tìm thấy thư mục testcase cho đề bài $problem_name!";
+	exit();
+}
+
 $cfg_file = $testcase_path . "Settings.cfg";
 
 if (!file_exists($cfg_file)) {
-	echo "Không tìm thấy tệp Settings.cfg trong thư mục testcase cho đề bài này!";
-	exit();
-}
+	$subfolders = array_filter(glob($testcase_path . '*'), 'is_dir');
+	if (empty($subfolders)) {
+		echo "Đề bài $problem_name có testcase nào không thế?";
+		exit();
+	}
 
-function decompressSettings($binaryData) {
-	return gzuncompress($binaryData);
-}
+	$xml = new SimpleXMLElement('<ExamInformation/>');
+	$xml->addAttribute('Name', $problem_name);
+	$xml->addAttribute('InputFile', $problem_name . '.INP');
+	$xml->addAttribute('UseStdIn', $useStdIn);
+	$xml->addAttribute('OutputFile', $problem_name . '.OUT');
+	$xml->addAttribute('UseStdOut', $useStdOut);
+	$xml->addAttribute('EvaluatorName', 'C1LinesWordsIgnoreCase.dll');
+	$num_subfolders = count($subfolders) > 0 ? count($subfolders) : 1;
+	$xml->addAttribute('Mark', $mark / $num_subfolders);
+	$xml->addAttribute('TimeLimit', $timeLimit);
+	$xml->addAttribute('MemoryLimit', $memoryLimit);
 
-function compressSettings($plainText) {
-	return gzcompress($plainText);
-}
+	foreach ($subfolders as $folder) {
+		$name = basename($folder);
+		$testcase = $xml->addChild('TestCase');
+		$testcase->addAttribute('Name', $name);
+		$testcase->addAttribute('Mark', '-1');
+		$testcase->addAttribute('TimeLimit', '-1');
+		$testcase->addAttribute('MemoryLimit', '-1');
+	}
 
-$binary_content = file_get_contents($cfg_file);
-$decompressed_content = decompressSettings($binary_content);
+	$xml_content = $xml->asXML();
+	$xml_content = preg_replace('/<\?xml.*?\?>/', '', $xml_content);
 
-$xml = simplexml_load_string($decompressed_content);
-if (!$xml) {
-	echo "Gặp lỗi khi đọc tệp Settings.cfg!";
-	exit();
+	$compressed_content = gzcompress($xml_content);
+	file_put_contents($cfg_file, $compressed_content);
+
+	$binary_content = file_get_contents($cfg_file);
+	$decompressed_content = gzuncompress($binary_content);
+	$xml = simplexml_load_string($decompressed_content);
+} else {
+	function decompressSettings($binaryData) {
+		return gzuncompress($binaryData);
+	}
+
+	function compressSettings($plainText) {
+		return gzcompress($plainText);
+	}
+
+	$binary_content = file_get_contents($cfg_file);
+	$decompressed_content = decompressSettings($binary_content);
+
+	$xml = simplexml_load_string($decompressed_content);
+	if (!$xml) {
+		echo "Gặp lỗi khi đọc tệp Settings.cfg!";
+		exit();
+	}
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -71,8 +120,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 
 	$updated_content = $xml->asXML();
-	$updated_content = preg_replace('/<\?xml.*?\?>/', '', $updated_content); // Remove the first line in XML
-	$compressed_content = compressSettings($updated_content);
+	$updated_content = preg_replace('/<\?xml.*?\?>/', '', $updated_content);
+	$compressed_content = gzcompress($updated_content);
 	file_put_contents($cfg_file, $compressed_content);
 	$stmt = $pdo->prepare("UPDATE problems SET time_limit = :time_limit, memory_limit = :memory_limit, stdin = :stdin, stdout = :stdout WHERE name = :name");
 	$stmt->execute([

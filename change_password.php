@@ -9,6 +9,32 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 $message = "";
+
+if (!isset($_SESSION['captcha_a']) || !isset($_SESSION['captcha_b']) || !isset($_SESSION['captcha_op']) || isset($_GET['new_captcha'])) {
+	$ops = ['+', '-', '*'];
+	$op = $ops[array_rand($ops)];
+	$a = rand(1, 9);
+	$b = rand(1, 9);
+
+	switch ($op) {
+		case '+':
+			$answer = $a + $b;
+			break;
+		case '-':
+			if ($a < $b) list($a, $b) = [$b, $a];
+			$answer = $a - $b;
+			break;
+		case '*':
+			$answer = $a * $b;
+			break;
+	}
+
+	$_SESSION['captcha_a'] = $a;
+	$_SESSION['captcha_b'] = $b;
+	$_SESSION['captcha_op'] = $op;
+	$_SESSION['captcha_answer'] = $answer;
+}
+
 if (isset($_GET['logout'])) {
 	session_destroy();
 	header("Location: auth.php");
@@ -18,13 +44,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 	$current_password = $_POST['current_password'];
 	$new_password = $_POST['new_password'];
 	$confirm_password = $_POST['confirm_password'];
+	$captcha = isset($_POST['captcha']) ? trim($_POST['captcha']) : '';
 
-	if (empty($current_password) || empty($new_password) || empty($confirm_password)) {
+	if (empty($current_password) || empty($new_password) || empty($confirm_password) || empty($captcha)) {
 		$message = "Vui lòng điền đầy đủ thông tin!";
 	} elseif ($new_password !== $confirm_password) {
 		$message = "Mật khẩu mới và xác nhận mật khẩu không khớp!";
-	} elseif (strlen($new_password) < 8) {
-		$message = "Mật khẩu mới phải có ít nhất 8 ký tự!";
+	} elseif (
+		strlen($new_password) < 8 ||
+		!preg_match('/\d/', $new_password) ||
+		!preg_match('/[\W_]/', $new_password)
+	) {
+		$message = "Mật khẩu cần ít nhất 8 ký tự và đảm bảo chứa ít nhất 1 chữ số, 1 ký tự đặc biệt!";
+	} elseif (
+		!isset($_SESSION['captcha_answer']) ||
+		$captcha !== strval($_SESSION['captcha_answer'])
+	) {
+		$message = "Captcha không đúng!";
 	} else {
 		$stmt = $pdo->prepare("SELECT password FROM users WHERE username = ?");
 		$stmt->execute([$username]);
@@ -127,20 +163,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 				<?php endif; ?>
 
 				<form method="POST" class="bg-secondary p-4 rounded">
-					<div class="mb-3">
-						<label class="form-label">Mật khẩu hiện tại</label>
-						<input type="password" name="current_password" class="form-control" required>
-					</div>
-					<div class="mb-3">
-						<label class="form-label">Mật khẩu mới</label>
-						<input type="password" name="new_password" class="form-control" required>
-					</div>
-					<div class="mb-3">
-						<label class="form-label">Xác nhận mật khẩu mới</label>
-						<input type="password" name="confirm_password" class="form-control" required>
-					</div>
-					<button type="submit" class="btn btn-warning w-100"><i class="bi bi-key-fill"></i> Đổi Mật Khẩu</button>
-				</form>
+	<div class="mb-3">
+		<label class="form-label">Mật khẩu hiện tại</label>
+		<input type="password" name="current_password" class="form-control" required>
+	</div>
+	<div class="mb-3">
+		<label class="form-label">Mật khẩu mới</label>
+		<input type="password" name="new_password" class="form-control" required>
+	</div>
+	<div class="mb-3">
+		<label class="form-label">Xác nhận mật khẩu mới</label>
+		<input type="password" name="confirm_password" class="form-control" required>
+	</div>
+	<div class="mb-3">
+		<label for="captcha" class="form-label">Xác nhận:</label>
+		<div class="input-group align-items-center">
+			<img src="captcha.php" alt="captcha" style="height:36px;margin-right:10px;" id="captcha-img">
+			<input type="text" name="captcha" id="captcha" placeholder="Trả lời" required class="form-control">
+			<button type="button" class="btn btn-outline-light" onclick="refreshCaptcha()">Làm mới</button>
+		</div>
+	</div>
+	<button type="submit" class="btn btn-warning w-100"><i class="bi bi-key-fill"></i> Đổi Mật Khẩu</button>
+</form>
 
 				<div class="text-center mt-3">
 					<a href="index.php" class="btn btn-success">Quay lại Trang Chủ</a>
@@ -155,4 +199,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		<a href="https://github.com/duongnotnhan/themis-onlan-judge"><i class="bi bi-github"></i> Source Code</a></p>
 	</div>
 </footer>
+<script>
+function refreshCaptcha() {
+	const img = document.getElementById('captcha-img');
+	img.src = 'captcha.php?new=' + Date.now();
+}
+</script>
 </html>

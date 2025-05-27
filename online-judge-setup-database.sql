@@ -9,7 +9,7 @@
 /*!40101 SET NAMES utf8 */;
 /*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40103 SET TIME_ZONE='+07:00' */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `contest_settings` (
 -- Dumping data for table online_judge.contest_settings: ~0 rows (approximately)
 DELETE FROM `contest_settings`;
 INSERT INTO `contest_settings` (`id`, `title`, `start_time`, `end_time`, `submission_path`, `allow_registration`, `testcase_path`) VALUES
-	(1, 'Test01', '2025-03-31 19:30:00', '2025-04-30 15:12:00', 'D:\\Themis\\data\\uploadDir', 1, 'E:\\gitbuh\\debai');
+	(1, 'Test01', '2025-03-31 19:30:00', '2025-04-30 15:12:00', 'D:\\Themis\\data\\uploadDir', 1, 'D:\\Themis\\data\\testcaseDir');
 
 -- Dumping structure for table online_judge.problems
 CREATE TABLE IF NOT EXISTS `problems` (
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table online_judge.users: ~2 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`id`, `username`, `password`, `role`, `created_at`, `full_name`, `class`, `school`) VALUES
-	(1, 'admin', '$2y$10$x1G1/YojYAsAl1.j8uSKnueanSm1mITN/yGs21fDN2BBwTW7GnFAu', 'admin', '2025-02-13 07:51:35', 'Đầy đủ Họ và Tên', '11 Tin', 'THPT Chuyên Bảo Lộc');
+	(1, 'admin', '$2y$10$x1G1/YojYAsAl1.j8uSKnueanSm1mITN/yGs21fDN2BBwTW7GnFAu', 'admin', '2025-02-13 07:51:35', 'Quản Trị Viên', '0 Tin', 'THPT Chuyên A');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
