@@ -10,33 +10,77 @@ function validateInput(input) {
 	const name = input.name;
 	const value = input.value.trim();
 
-	if (name === 'Mark' || name.includes('[Mark]')) {
-		if (name.includes('[Mark]') && !validateFloat(value, true)) {
-			input.setCustomValidity('Điểm phải là số thực lớn hơn 0 (hoặc bằng -1 nếu dùng cài đặt chung).');
-		} else if (!name.includes('[Mark]') && !validateFloat(value, false)) {
-			input.setCustomValidity('Điểm chung mỗi test phải là số thực lớn hơn 0.');
-		} else {
-			input.setCustomValidity('');
-		}
-	} else if (name === 'TimeLimit' || name.includes('[TimeLimit]')) {
-		if (name.includes('[TimeLimit]') && !validateFloat(value, true)) {
-			input.setCustomValidity('Giới hạn thời gian phải là số thực lớn hơn 0 (hoặc bằng -1 nếu dùng cài đặt chung).');
-		} else if (!name.includes('[TimeLimit]') && !validateFloat(value, false)) {
-			input.setCustomValidity('Giới hạn thời gian chung mỗi test phải là số thực lớn hơn 0.');
-		} else {
-			input.setCustomValidity('');
-		}
-	} else if (name === 'MemoryLimit' || name.includes('[MemoryLimit]')) {
-		if (name.includes('[MemoryLimit]') && !validateInt(value, true)) {
-			input.setCustomValidity('Giới hạn bộ nhớ phải là số nguyên lớn hơn hoặc bằng 1 (hoặc bằng -1 nếu dùng cài đặt chung).');
-		} else if (!name.includes('[MemoryLimit]') && !validateFloat(value, false)) {
-			input.setCustomValidity('Giới hạn bộ nhớ chung mỗi test phải là số nguyên lớn hơn hoặc bằng 1.');
-		} else {
-			input.setCustomValidity('');
-		}
+	if (isMarkField(name)) {
+		validateMark(input, value);
+	} else if (isTimeLimitField(name)) {
+		validateTimeLimit(input, value);
+	} else if (isMemoryLimitField(name)) {
+		validateMemoryLimit(input, value);
+	} else {
+		input.setCustomValidity('');
 	}
 
 	input.reportValidity();
+}
+
+function isMarkField(name) {
+	return name === 'Mark' || name.includes('[Mark]');
+}
+
+function isTimeLimitField(name) {
+	return name === 'TimeLimit' || name.includes('[TimeLimit]');
+}
+
+function isMemoryLimitField(name) {
+	return name === 'MemoryLimit' || name.includes('[MemoryLimit]');
+}
+
+function validateMark(input, value) {
+	const allowShared = input.name.includes('[Mark]');
+
+	if (allowShared) {
+		if (!validateFloat(value, true)) {
+			input.setCustomValidity('Điểm phải là số thực lớn hơn 0 (hoặc bằng -1 nếu dùng cài đặt chung).');
+			return;
+		}
+	} else if (!validateFloat(value, false)) {
+		input.setCustomValidity('Điểm chung mỗi test phải là số thực lớn hơn 0.');
+		return;
+	}
+
+	input.setCustomValidity('');
+}
+
+function validateTimeLimit(input, value) {
+	const allowShared = input.name.includes('[TimeLimit]');
+
+	if (allowShared) {
+		if (!validateFloat(value, true)) {
+			input.setCustomValidity('Giới hạn thời gian phải là số thực lớn hơn 0 (hoặc bằng -1 nếu dùng cài đặt chung).');
+			return;
+		}
+	} else if (!validateFloat(value, false)) {
+		input.setCustomValidity('Giới hạn thời gian chung mỗi test phải là số thực lớn hơn 0.');
+		return;
+	}
+
+	input.setCustomValidity('');
+}
+
+function validateMemoryLimit(input, value) {
+	const allowShared = input.name.includes('[MemoryLimit]');
+
+	if (allowShared) {
+		if (!validateInt(value, true)) {
+			input.setCustomValidity('Giới hạn bộ nhớ phải là số nguyên lớn hơn hoặc bằng 1 (hoặc bằng -1 nếu dùng cài đặt chung).');
+			return;
+		}
+	} else if (!validateInt(value, false)) {
+		input.setCustomValidity('Giới hạn bộ nhớ chung mỗi test phải là số nguyên lớn hơn hoặc bằng 1.');
+		return;
+	}
+
+	input.setCustomValidity('');
 }
 
 function confirmSave(event) {
